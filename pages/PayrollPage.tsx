@@ -53,9 +53,6 @@ export const PayrollPage: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
   const [availableYears, setAvailableYears] = useState<string[]>([CURRENT_YEAR]);
   
-  // Kakao URL State
-  const [kakaoUrl, setKakaoUrl] = useState('');
-
   // Modal States
   const [isMasterModalOpen, setIsMasterModalOpen] = useState(false);
   const [isRosterModalOpen, setIsRosterModalOpen] = useState(false);
@@ -86,10 +83,6 @@ export const PayrollPage: React.FC = () => {
             years: { [CURRENT_YEAR]: {} }
          }));
     }
-
-    // Load Saved Kakao URL
-    const savedKakao = localStorage.getItem('dh_kakao_url');
-    if (savedKakao) setKakaoUrl(savedKakao);
   }, [CURRENT_YEAR]);
 
   // Jumin Input Handler
@@ -288,42 +281,16 @@ export const PayrollPage: React.FC = () => {
     XLSX.utils.book_append_sheet(wb, ws, "급여대장");
     XLSX.writeFile(wb, `${selectedYear}_급여신고자료.xlsx`);
 
-    // 3. Open Email Client
+    // 3. Alert Instructions for Mobile/Desktop
+    alert(`[파일 저장 완료]\n\n엑셀 파일이 기기에 저장되었습니다.\n• PC: '다운로드' 폴더 확인\n• 모바일: '내 파일' 또는 '파일' 앱 내의 다운로드 폴더 확인\n\n확인 버튼을 누르면 이메일 앱이 열립니다.\n저장된 파일을 직접 첨부해서 보내주세요.`);
+
+    // 4. Open Email Client
     const subject = encodeURIComponent(`${selectedYear}년 급여신고 자료 제출`);
     const body = encodeURIComponent(
       `세무사님 안녕하세요,\n\n${selectedYear}년도 체육관 급여신고 자료를 엑셀 파일로 송부드립니다.\n\n(다운로드된 엑셀 파일을 이 메일에 첨부하여 보내주세요.)\n\n감사합니다.`
     );
     
-    // Slight delay to allow download to start
-    setTimeout(() => {
-        window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    }, 1000);
-  };
-
-  // --- Logic: Kakao Channel (Persistent) ---
-  const updateKakaoUrl = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    const newUrl = prompt(
-      "세무사님(또는 본인)의 카카오톡 채널 URL을 입력해주세요.\n(예: http://pf.kakao.com/_xxxx)", 
-      kakaoUrl || "http://pf.kakao.com/"
-    );
-    if (newUrl) {
-      if (!newUrl.startsWith('http')) {
-        alert("URL은 http:// 또는 https:// 로 시작해야 합니다.");
-        return;
-      }
-      localStorage.setItem('dh_kakao_url', newUrl);
-      setKakaoUrl(newUrl);
-      alert("카카오톡 채널 주소가 저장되었습니다. 이제 버튼을 누르면 바로 연결됩니다.");
-    }
-  };
-
-  const handleKakaoClick = () => {
-    if (!kakaoUrl) {
-      updateKakaoUrl();
-    } else {
-      window.open(kakaoUrl, '_blank');
-    }
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
   // Dashboard Stats
@@ -369,7 +336,7 @@ export const PayrollPage: React.FC = () => {
                     </select>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 mb-3">
+                <div className="grid grid-cols-2 gap-3">
                     <button onClick={() => setIsMasterModalOpen(true)} className="bg-white border-2 border-slate-100 text-slate-600 py-3 rounded-xl font-bold text-sm hover:border-indigo-200 hover:text-indigo-600 flex items-center justify-center gap-2 transition-all">
                         <span>👥</span> 코치 관리
                     </button>
@@ -381,30 +348,6 @@ export const PayrollPage: React.FC = () => {
                     </button>
                 </div>
                 
-                <button onClick={handleKakaoClick} className="w-full relative group bg-[#FAE100] text-[#371D1E] py-3 rounded-xl font-bold text-sm hover:bg-[#F7D600] flex items-center justify-center gap-2 transition-all shadow-sm">
-                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 3C5.925 3 1 6.925 1 11.775C1 14.65 2.875 17.225 5.825 18.725C5.7 19.175 4.975 21.675 4.9 21.95C4.825 22.25 5.175 22.425 5.425 22.25C5.625 22.125 9.175 19.725 9.925 19.225C10.6 19.325 11.3 19.375 12 19.375C18.075 19.375 23 15.45 23 10.6C23 5.75 18.075 3 12 3Z"/>
-                   </svg>
-                   <span>{kakaoUrl ? "카카오톡 채널로 영수증 보내기" : "카카오톡 채널 주소 설정하기"}</span>
-                   
-                   {/* Edit URL Button */}
-                   <div 
-                      onClick={updateKakaoUrl} 
-                      className="absolute right-3 p-2 rounded-full hover:bg-black/10 text-[#371D1E]/40 hover:text-[#371D1E] transition-colors" 
-                      title="채널 주소 변경"
-                   >
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
-                        <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
-                      </svg>
-                   </div>
-                </button>
-                
-                {/* Explain Kakao Usage */}
-                <p className="text-[10px] text-slate-400 text-center mt-2 px-2 leading-snug">
-                   💡 [세무사 전송(엑셀)]을 눌러 파일을 다운로드 받은 후,<br/>
-                   [카카오톡 채널] 채팅창에 파일을 드래그해서 보내주세요.
-                </p>
-
                 <div className={`text-right text-[10px] mt-2 h-4 font-medium transition-colors ${saveIndicator ? 'text-green-600' : 'text-slate-400'}`}>
                     {saveIndicator}
                 </div>

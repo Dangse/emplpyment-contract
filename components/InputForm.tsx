@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ContractType, ContractFormData } from '../types';
 import { InputField } from './InputField';
 import { Button } from './Button';
 
 interface InputFormProps {
   type: ContractType;
+  initialData?: ContractFormData | null;
   onSubmit: (data: ContractFormData) => void;
   onBack: () => void;
   isLoading: boolean;
 }
 
-export const InputForm: React.FC<InputFormProps> = ({ type, onSubmit, onBack, isLoading }) => {
-  const [formData, setFormData] = useState<ContractFormData>({
+export const InputForm: React.FC<InputFormProps> = ({ type, initialData, onSubmit, onBack, isLoading }) => {
+  const defaultData: ContractFormData = {
     partyA: '',
     partyB: '',
     startDate: new Date().toISOString().split('T')[0],
@@ -24,7 +25,15 @@ export const InputForm: React.FC<InputFormProps> = ({ type, onSubmit, onBack, is
     projectScope: '',
     deliverables: '',
     additionalTerms: '',
-  });
+  };
+
+  const [formData, setFormData] = useState<ContractFormData>(defaultData);
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -39,134 +48,162 @@ export const InputForm: React.FC<InputFormProps> = ({ type, onSubmit, onBack, is
   const isEmployment = type === ContractType.EMPLOYMENT;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
-        <div className="mb-8 border-b pb-4">
-          <h2 className="text-2xl font-bold text-slate-900">
+    <div className="max-w-3xl mx-auto px-4 py-8">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 md:p-10">
+        <div className="mb-10 border-b border-slate-100 pb-6 flex items-baseline justify-between">
+          <div>
+             <h2 className="text-3xl font-bold text-slate-900 font-serif">
             {isEmployment ? '근로계약 정보 입력' : '프리랜서 계약 정보 입력'}
-          </h2>
-          <p className="text-slate-500 mt-1">필요한 정보를 상세히 입력할수록 정확한 계약서가 작성됩니다.</p>
+            </h2>
+            <p className="text-slate-500 mt-2 text-sm">법률적 효력을 위해 정확한 정보를 입력해 주십시오.</p>
+          </div>
+          <span className="text-xs text-slate-400 font-medium px-2 py-1 bg-slate-50 rounded">
+            DH 대한세무법인
+          </span>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputField 
-              label={isEmployment ? "사용자(갑) 성명/상호" : "의뢰인(갑) 성명/상호"}
-              name="partyA" 
-              value={formData.partyA} 
-              onChange={handleChange} 
-              placeholder="예: 주식회사 000 대표 홍길동"
-              required 
-            />
-            <InputField 
-              label={isEmployment ? "근로자(을) 성명" : "프리랜서(을) 성명"}
-              name="partyB" 
-              value={formData.partyB} 
-              onChange={handleChange} 
-              placeholder="예: 김철수"
-              required 
-            />
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-slate-800 flex items-center">
+              <span className="w-1.5 h-1.5 bg-slate-800 rounded-full mr-2"></span>
+              당사자 정보
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <InputField 
+                label={isEmployment ? "사용자(갑) 성명/상호" : "의뢰인(갑) 성명/상호"}
+                name="partyA" 
+                value={formData.partyA} 
+                onChange={handleChange} 
+                placeholder="예: 주식회사 000 대표 홍길동"
+                required 
+              />
+              <InputField 
+                label={isEmployment ? "근로자(을) 성명" : "프리랜서(을) 성명"}
+                name="partyB" 
+                value={formData.partyB} 
+                onChange={handleChange} 
+                placeholder="예: 김철수"
+                required 
+              />
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputField 
-              label="계약 시작일" 
-              type="date" 
-              name="startDate" 
-              value={formData.startDate} 
-              onChange={handleChange} 
-              required 
-            />
-            <InputField 
-              label="계약 종료일 (선택)" 
-              type="date" 
-              name="endDate" 
-              value={formData.endDate || ''} 
-              onChange={handleChange} 
-            />
-          </div>
-
-          {/* Conditional Fields based on Type */}
-          {isEmployment ? (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <InputField 
-                  label="근무 장소" 
-                  name="workLocation" 
-                  value={formData.workLocation || ''} 
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-slate-800 flex items-center">
+              <span className="w-1.5 h-1.5 bg-slate-800 rounded-full mr-2"></span>
+              계약 기간 및 조건
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <InputField 
+                label="계약 시작일" 
+                type="date" 
+                name="startDate" 
+                value={formData.startDate} 
+                onChange={handleChange} 
+                required 
+              />
+              <InputField 
+                label="계약 종료일 (선택)" 
+                type="date" 
+                name="endDate" 
+                value={formData.endDate || ''} 
+                onChange={handleChange} 
+              />
+            </div>
+             {/* Conditional Fields based on Type */}
+            {isEmployment ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                   <InputField 
+                    label="근무 장소" 
+                    name="workLocation" 
+                    value={formData.workLocation || ''} 
+                    onChange={handleChange} 
+                    placeholder="예: 서울시 강남구 본사 사무실"
+                    required
+                  />
+                  <InputField 
+                    label="업무 내용 (직위)" 
+                    name="jobTitle" 
+                    value={formData.jobTitle || ''} 
+                    onChange={handleChange} 
+                    placeholder="예: 마케팅 팀장 / 웹 개발 업무"
+                    required
+                  />
+                </div>
+                <InputField 
+                  label="근로 시간 및 휴게 시간" 
+                  name="workingHours" 
+                  value={formData.workingHours || ''} 
                   onChange={handleChange} 
-                  placeholder="예: 서울시 강남구 본사 사무실"
+                  placeholder="예: 09:00~18:00 (휴게시간 12:00~13:00)"
+                  required
+                />
+              </>
+            ) : (
+              <>
+                <InputField 
+                  label="프로젝트/업무 범위" 
+                  name="projectScope" 
+                  value={formData.projectScope || ''} 
+                  onChange={handleChange} 
+                  placeholder="예: 회사 홈페이지 리뉴얼 디자인 및 퍼블리싱"
+                  textarea
                   required
                 />
                 <InputField 
-                  label="업무 내용 (직위)" 
-                  name="jobTitle" 
-                  value={formData.jobTitle || ''} 
+                  label="결과물 (납품 대상)" 
+                  name="deliverables" 
+                  value={formData.deliverables || ''} 
                   onChange={handleChange} 
-                  placeholder="예: 마케팅 팀장 / 웹 개발 업무"
+                  placeholder="예: 디자인 원본 파일(PSD), 퍼블리싱 소스코드(HTML/CSS)"
                   required
                 />
-              </div>
-              <InputField 
-                label="근로 시간 및 휴게 시간" 
-                name="workingHours" 
-                value={formData.workingHours || ''} 
-                onChange={handleChange} 
-                placeholder="예: 09:00~18:00 (휴게시간 12:00~13:00)"
-                required
-              />
-            </>
-          ) : (
-            <>
-              <InputField 
-                label="프로젝트/업무 범위" 
-                name="projectScope" 
-                value={formData.projectScope || ''} 
-                onChange={handleChange} 
-                placeholder="예: 회사 홈페이지 리뉴얼 디자인 및 퍼블리싱"
-                textarea
-                required
-              />
-              <InputField 
-                label="결과물 (납품 대상)" 
-                name="deliverables" 
-                value={formData.deliverables || ''} 
-                onChange={handleChange} 
-                placeholder="예: 디자인 원본 파일(PSD), 퍼블리싱 소스코드(HTML/CSS)"
-                required
-              />
-            </>
-          )}
+              </>
+            )}
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-             <InputField 
-              label={isEmployment ? "임금 (월급/연봉)" : "용역 대금 (총액)"} 
-              name="paymentAmount" 
-              value={formData.paymentAmount} 
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-slate-800 flex items-center">
+              <span className="w-1.5 h-1.5 bg-slate-800 rounded-full mr-2"></span>
+              대금 지급
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               <InputField 
+                label={isEmployment ? "임금 (월급/연봉)" : "용역 대금 (총액)"} 
+                name="paymentAmount" 
+                value={formData.paymentAmount} 
+                onChange={handleChange} 
+                placeholder={isEmployment ? "예: 월 3,000,000원 (세전)" : "예: 일금 5,000,000원 (VAT 별도)"}
+                required 
+              />
+               <InputField 
+                label="지급 방법 및 시기" 
+                name="paymentTerms" 
+                value={formData.paymentTerms} 
+                onChange={handleChange} 
+                placeholder={isEmployment ? "예: 매월 25일 근로자 계좌로 입금" : "예: 착수금 50% 계약 시, 잔금 50% 완료 시 지급"}
+                required 
+              />
+            </div>
+          </div>
+          
+           <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-slate-800 flex items-center">
+              <span className="w-1.5 h-1.5 bg-slate-800 rounded-full mr-2"></span>
+              기타
+            </h3>
+            <InputField 
+              label="기타 특약 사항 (선택)" 
+              name="additionalTerms" 
+              value={formData.additionalTerms || ''} 
               onChange={handleChange} 
-              placeholder={isEmployment ? "예: 월 3,000,000원 (세전)" : "예: 일금 5,000,000원 (VAT 별도)"}
-              required 
-            />
-             <InputField 
-              label="지급 방법 및 시기" 
-              name="paymentTerms" 
-              value={formData.paymentTerms} 
-              onChange={handleChange} 
-              placeholder={isEmployment ? "예: 매월 25일 근로자 계좌로 입금" : "예: 착수금 50% 계약 시, 잔금 50% 완료 시 지급"}
-              required 
+              textarea
+              placeholder="추가적으로 명시하고 싶은 조항이 있다면 입력해주세요."
             />
           </div>
 
-          <InputField 
-            label="기타 특약 사항 (선택)" 
-            name="additionalTerms" 
-            value={formData.additionalTerms || ''} 
-            onChange={handleChange} 
-            textarea
-            placeholder="추가적으로 명시하고 싶은 조항이 있다면 입력해주세요."
-          />
-
-          <div className="flex gap-4 pt-4">
+          <div className="flex gap-4 pt-8 border-t border-slate-100">
             <Button type="button" variant="outline" onClick={onBack}>
               이전으로
             </Button>
@@ -177,7 +214,7 @@ export const InputForm: React.FC<InputFormProps> = ({ type, onSubmit, onBack, is
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  AI가 계약서 작성 중...
+                  작성 중...
                 </>
               ) : (
                 '계약서 생성하기'

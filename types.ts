@@ -30,3 +30,10 @@ export interface GeneratedContract {
   title: string;
   content: string;
 }
+
+export interface ContractHistoryItem {
+  id: string;
+  timestamp: number;
+  type: ContractType;
+  formData: ContractFormData;
+}

@@ -32,7 +32,7 @@ export const ResultView: React.FC<ResultViewProps> = ({ content, onReset }) => {
       if (line.trim().startsWith('#')) {
         const cleanText = line.replace(/^[#\s]+/, ''); // Remove # and leading spaces
         return (
-          <h3 key={index} className="text-xl font-bold text-slate-900 mt-8 mb-4 font-serif border-b-2 border-slate-900 pb-2">
+          <h3 key={index} className="text-2xl font-bold text-slate-900 mt-10 mb-6 font-serif border-b-2 border-slate-900 pb-3">
             {cleanText}
           </h3>
         );
@@ -43,13 +43,13 @@ export const ResultView: React.FC<ResultViewProps> = ({ content, onReset }) => {
       const parts = line.split(/(\*\*.*?\*\*)/g);
       
       const isEmpty = line.trim() === '';
-      if (isEmpty) return <div key={index} className="h-4"></div>;
+      if (isEmpty) return <div key={index} className="h-6"></div>;
 
       return (
-        <p key={index} className="text-base leading-relaxed text-slate-800 mb-2 text-justify">
+        <p key={index} className="text-lg leading-8 text-slate-800 mb-4 text-justify font-normal tracking-wide">
           {parts.map((part, i) => {
             if (part.startsWith('**') && part.endsWith('**')) {
-              return <strong key={i} className="font-bold">{part.slice(2, -2)}</strong>;
+              return <strong key={i} className="font-bold text-slate-900">{part.slice(2, -2)}</strong>;
             }
             return <span key={i}>{part}</span>;
           })}

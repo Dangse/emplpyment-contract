@@ -49,16 +49,16 @@ export const HomePage: React.FC = () => {
           </div>
           
           <h1 className="text-5xl md:text-7xl font-bold text-slate-900 font-serif leading-[1.1] tracking-tight">
-            세무와 노무 관리를 <br className="hidden md:block"/>
+            관장님 덕분에 <br className="hidden md:block"/>
             <span className="relative inline-block">
-              <span className="relative z-10">더 스마트하게.</span>
+              <span className="relative z-10">대한민국이 더 건강해졌어요.</span>
               <span className="absolute bottom-2 left-0 w-full h-3 bg-indigo-100/80 -z-0"></span>
             </span>
           </h1>
           
           <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed font-light">
-            복잡한 계약서 작성부터 매월 반복되는 급여 계산까지.<br/>
-            DH 대한세무법인의 AI 솔루션으로 업무 효율을 극대화하세요.
+            계약서 작성부터  급여 계산까지.<br/>
+            대한세무법인이 조금 더 도움이 되겠습니다.
           </p>
         </div>
 
@@ -83,7 +83,7 @@ export const HomePage: React.FC = () => {
                 AI 스마트 계약서
               </h2>
               <p className="text-slate-500 mb-8 leading-relaxed font-light">
-                변호사가 검토한 듯한 전문적인 계약서를 AI가 3초 만에 작성합니다.<br/>근로계약부터 프리랜서 용역까지 완벽하게.
+                전문적인 계약서를 AI가 3초 만에 작성합니다.<br/>근로계약부터 프리랜서 용역까지 완벽하게.
               </p>
               
               <div className="mt-auto flex items-center font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
@@ -113,10 +113,10 @@ export const HomePage: React.FC = () => {
               </div>
               
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 font-serif">
-                급여관리 Pro
+                급여관리
               </h2>
               <p className="text-slate-400 mb-8 leading-relaxed font-light">
-                복잡한 세금 계산과 급여 명세서, 이제 엑셀 없이 관리하세요.<br/>세무사 리포트 자동 전송까지 한 번에.
+                초간단 급여관리.<br/>클릭 한 번으로 대한세무법에 전달.
               </p>
               
               <div className="mt-auto flex items-center font-bold text-white group-hover:text-indigo-300 transition-colors">
@@ -142,8 +142,8 @@ export const HomePage: React.FC = () => {
                
                <ul className="grid gap-3 md:grid-cols-1">
                 {[
-                  "사업용계좌만들기 및 미이행시 가산세",
-                  "현금영수증의무발행 미이행시 가산세",
+                  "사업용계좌만들기 - 미이행시 매년수입금액 * 0.2% 가산세 ",
+                  "10만원 이상 현금영수증의무발행 - 미이행시 미발행금액 *20% 가산세",
                   "지출신용카드 홈텍스에 반드시 등록하기",
                   "개업초기 인테리어 영수증 꼭 받기",
                   "권리금 주고 인수시 계약서와 대금지급영수증 챙기기"

@@ -147,12 +147,12 @@ export const InputForm: React.FC<InputFormProps> = ({ type, initialData, onSubmi
                   name="projectScope" 
                   value={formData.projectScope || ''} 
                   onChange={handleChange} 
-                  placeholder="예: 회사 홈페이지 리뉴얼 디자인 및 퍼블리싱"
+                  placeholder="예: 관원 기본체력 보강 및 기초훈련 지도 "
                   textarea
                   required
                 />
                 <InputField 
-                  label="결과물 (납품 대상)" 
+                  label="" 
                   name="deliverables" 
                   value={formData.deliverables || ''} 
                   onChange={handleChange} 
@@ -170,11 +170,11 @@ export const InputForm: React.FC<InputFormProps> = ({ type, initialData, onSubmi
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <InputField 
-                label={isEmployment ? "임금 (월급/연봉)" : "용역 대금 (총액)"} 
+                label={isEmployment ? "임금 (월급/연봉)" : "프리랜서지급액 (총액)"} 
                 name="paymentAmount" 
                 value={formData.paymentAmount} 
                 onChange={handleChange} 
-                placeholder={isEmployment ? "예: 월 3,000,000원 (세전)" : "예: 일금 5,000,000원 (VAT 별도)"}
+                placeholder={isEmployment ? "예: 월 3,000,000원 (세전)" : " 예 프리랜서 지급액 "}
                 required 
               />
                <InputField 
@@ -182,7 +182,7 @@ export const InputForm: React.FC<InputFormProps> = ({ type, initialData, onSubmi
                 name="paymentTerms" 
                 value={formData.paymentTerms} 
                 onChange={handleChange} 
-                placeholder={isEmployment ? "예: 매월 25일 근로자 계좌로 입금" : "예: 착수금 50% 계약 시, 잔금 50% 완료 시 지급"}
+                placeholder={isEmployment ? "예: 매월 25일 근로자 계좌로 입금" : "매월25일 프리랜서 지급액 "}
                 required 
               />
             </div>

@@ -311,68 +311,68 @@ export const PayrollPage: React.FC = () => {
     <div className="bg-slate-50 min-h-screen pb-20 font-sans text-slate-800">
         <div className="max-w-3xl mx-auto px-4 py-4">
             {/* Nav */}
-            <div className="flex items-center justify-between mb-3">
-                 <button onClick={() => navigate('/')} className="inline-flex items-center text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <div className="flex items-center justify-between mb-4">
+                 <button onClick={() => navigate('/')} className="inline-flex items-center text-base font-bold text-slate-500 hover:text-indigo-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
                     홈으로
                 </button>
-                <div className="text-xs font-bold text-slate-400">DH 급여관리 Pro</div>
+                <div className="text-sm font-bold text-slate-400">DH 급여관리 Pro</div>
             </div>
 
             {/* Header */}
-            <header className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-5 sticky top-2 z-40">
-                <div className="flex justify-between items-center mb-4">
-                    <h1 className="text-xl font-black text-slate-800 flex items-center gap-2">
+            <header className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-6 sticky top-2 z-40">
+                <div className="flex justify-between items-center mb-5">
+                    <h1 className="text-2xl font-black text-slate-800 flex items-center gap-2">
                         🥊 급여 장부
                     </h1>
                     <select 
                         value={selectedYear} 
                         onChange={(e) => setSelectedYear(e.target.value)}
-                        className="bg-slate-100 font-bold text-indigo-700 py-1 px-3 rounded-lg border-none outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="bg-slate-100 font-bold text-lg text-indigo-700 py-2 px-4 rounded-xl border-none outline-none focus:ring-2 focus:ring-indigo-500"
                     >
                         {availableYears.map(y => <option key={y} value={y}>{y}년 장부</option>)}
                     </select>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                    <button onClick={() => setIsMasterModalOpen(true)} className="bg-white border-2 border-slate-100 text-slate-600 py-3 rounded-xl font-bold text-sm hover:border-indigo-200 hover:text-indigo-600 flex items-center justify-center gap-2 transition-all">
+                    <button onClick={() => setIsMasterModalOpen(true)} className="bg-white border-2 border-slate-100 text-slate-700 py-4 rounded-xl font-bold text-base hover:border-indigo-200 hover:text-indigo-600 flex items-center justify-center gap-2 transition-all">
                         <span>👥</span> 코치 관리
                     </button>
-                    <button onClick={handleExcelAndEmail} className="bg-green-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-green-700 flex items-center justify-center gap-2 transition-all shadow-md shadow-green-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <button onClick={handleExcelAndEmail} className="bg-green-600 text-white py-4 rounded-xl font-bold text-base hover:bg-green-700 flex items-center justify-center gap-2 transition-all shadow-md shadow-green-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                         세무사 전송 (엑셀)
                     </button>
                 </div>
                 
-                <div className={`text-right text-[10px] mt-2 h-4 font-medium transition-colors ${saveIndicator ? 'text-green-600' : 'text-slate-400'}`}>
+                <div className={`text-right text-xs mt-2 h-4 font-medium transition-colors ${saveIndicator ? 'text-green-600' : 'text-slate-400'}`}>
                     {saveIndicator}
                 </div>
             </header>
 
             {/* Dashboard */}
-            <div className="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl p-5 text-white shadow-lg mb-6">
-                <div className="flex justify-between items-start mb-2">
-                    <h2 className="text-sm font-bold text-indigo-100 opacity-80">올해 누적 지급 현황</h2>
-                    <span className="bg-white/20 px-2 py-0.5 rounded text-[10px]">Total Year</span>
+            <div className="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl p-6 text-white shadow-lg mb-8">
+                <div className="flex justify-between items-start mb-3">
+                    <h2 className="text-base font-bold text-indigo-100 opacity-80">올해 누적 지급 현황</h2>
+                    <span className="bg-white/20 px-2 py-1 rounded text-xs font-bold">Total Year</span>
                 </div>
                 <div className="flex justify-between items-end">
                     <div>
-                        <p className="text-xs text-indigo-200 mb-1">총 실지급액 (세후)</p>
-                        <p className="text-3xl font-black tracking-tight">{yNet.toLocaleString()}원</p>
+                        <p className="text-sm text-indigo-200 mb-1">총 실지급액 (세후)</p>
+                        <p className="text-4xl font-black tracking-tight">{yNet.toLocaleString()}원</p>
                     </div>
                     <div className="text-right">
-                        <div className="text-[10px] text-indigo-200">총 세전 <span className="text-white font-bold ml-1 text-sm">{yGross.toLocaleString()}</span></div>
-                        <div className="text-[10px] text-indigo-200">총 세금 <span className="text-red-200 font-bold ml-1 text-sm">{yTax.toLocaleString()}</span></div>
+                        <div className="text-xs text-indigo-200 mb-1">총 세전 <span className="text-white font-bold ml-1 text-base">{yGross.toLocaleString()}</span></div>
+                        <div className="text-xs text-indigo-200">총 세금 <span className="text-red-200 font-bold ml-1 text-base">{yTax.toLocaleString()}</span></div>
                     </div>
                 </div>
             </div>
 
             {/* Month Cards */}
-            <div className="space-y-6">
+            <div className="space-y-8">
                 {Array.from({length: 12}).map((_, i) => {
                     const monthIndex = i;
                     const rosterIds = db.rosters[`${selectedYear}-${monthIndex}`] || [];
@@ -388,14 +388,14 @@ export const PayrollPage: React.FC = () => {
 
                     return (
                         <div key={i} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                            <div className="bg-slate-50 px-5 py-3 border-b border-slate-100 flex justify-between items-center">
-                                <h3 className="text-lg font-black text-slate-800">{monthIndex + 1}월</h3>
-                                <button onClick={() => openRosterAddModal(monthIndex)} className="text-xs bg-white border border-slate-200 text-indigo-600 font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-50 shadow-sm">+ 근무자 추가</button>
+                            <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                                <h3 className="text-2xl font-black text-slate-800">{monthIndex + 1}월</h3>
+                                <button onClick={() => openRosterAddModal(monthIndex)} className="text-sm bg-white border border-slate-200 text-indigo-600 font-bold px-4 py-2 rounded-lg hover:bg-indigo-50 shadow-sm">+ 근무자 추가</button>
                             </div>
                             
-                            <div className="px-5 py-2">
+                            <div className="px-6 py-3">
                                 {roster.length === 0 ? (
-                                    <div className="text-center py-6 text-xs text-slate-400">근무 기록이 없습니다.</div>
+                                    <div className="text-center py-8 text-sm text-slate-400">근무 기록이 없습니다.</div>
                                 ) : (
                                     roster.map(c => {
                                         const val = db.years[selectedYear]?.[c.id]?.[monthIndex] || 0;
@@ -403,25 +403,25 @@ export const PayrollPage: React.FC = () => {
                                         const net = val - tax;
 
                                         return (
-                                            <div key={c.id} className="py-3 border-b border-slate-100 last:border-0">
-                                                <div className="flex justify-between items-center mb-1">
-                                                    <div className="font-bold text-slate-700 text-sm">{c.name}</div>
-                                                    <button onClick={() => removeFromRoster(monthIndex, c.id)} className="text-[10px] text-slate-300 hover:text-red-500 border border-slate-100 hover:border-red-200 px-2 py-0.5 rounded transition-colors">이달 제외</button>
+                                            <div key={c.id} className="py-4 border-b border-slate-100 last:border-0">
+                                                <div className="flex justify-between items-center mb-2">
+                                                    <div className="font-bold text-slate-800 text-lg">{c.name}</div>
+                                                    <button onClick={() => removeFromRoster(monthIndex, c.id)} className="text-xs text-slate-400 hover:text-red-500 border border-slate-200 hover:border-red-200 px-2 py-1 rounded transition-colors">이달 제외</button>
                                                 </div>
-                                                <div className="flex items-center gap-3">
+                                                <div className="flex items-center gap-4">
                                                     <div className="relative flex-1">
                                                         <input 
                                                             type="tel" 
                                                             value={val > 0 ? val.toLocaleString() : ''}
                                                             onChange={(e) => updateAmount(monthIndex, c.id, e.target.value)}
-                                                            className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-right font-bold text-slate-800 focus:ring-2 focus:ring-indigo-500 outline-none text-sm placeholder-slate-300" 
+                                                            className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-right font-bold text-slate-900 text-lg focus:ring-2 focus:ring-indigo-500 outline-none placeholder-slate-300" 
                                                             placeholder="0" 
                                                         />
-                                                        <span className="absolute left-2 top-2.5 text-[10px] text-slate-400 font-medium">지급액</span>
+                                                        <span className="absolute left-3 top-4 text-xs text-slate-400 font-medium">지급액</span>
                                                     </div>
                                                     <div className="w-[40%] flex flex-col items-end text-right">
-                                                        <div className="text-[10px] text-slate-500 mb-0.5">세금(3.3%) <span className="text-red-500 font-medium ml-1">{tax.toLocaleString()}</span></div>
-                                                        <div className="text-sm font-black text-indigo-700"><span className="text-[10px] text-indigo-300 mr-1 font-normal">차인</span>{net.toLocaleString()}</div>
+                                                        <div className="text-xs text-slate-500 mb-1">세금(3.3%) <span className="text-red-500 font-medium ml-1 text-sm">{tax.toLocaleString()}</span></div>
+                                                        <div className="text-xl font-black text-indigo-700"><span className="text-xs text-indigo-300 mr-1 font-normal">차인</span>{net.toLocaleString()}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -430,12 +430,12 @@ export const PayrollPage: React.FC = () => {
                                 )}
                             </div>
                             
-                            <div className="bg-indigo-50/50 border-t border-indigo-100 px-5 py-4 mt-2">
+                            <div className="bg-indigo-50/50 border-t border-indigo-100 px-6 py-5 mt-2">
                                 <div className="flex justify-between items-center mb-2"><span className="text-xs font-bold text-indigo-900 bg-indigo-100 px-2 py-1 rounded">월말 합계</span></div>
                                 <div className="grid grid-cols-3 gap-2 text-center divide-x divide-indigo-200/50">
-                                    <div><div className="text-[10px] text-slate-500 mb-1">총 지급액</div><div className="text-sm font-bold text-slate-700">{mGross.toLocaleString()}</div></div>
-                                    <div><div className="text-[10px] text-slate-500 mb-1">총 원천세</div><div className="text-sm font-bold text-red-500">{mTax.toLocaleString()}</div></div>
-                                    <div><div className="text-[10px] text-indigo-500 font-bold mb-1">총 차인지급액</div><div className="text-base font-black text-indigo-700">{mNet.toLocaleString()}</div></div>
+                                    <div><div className="text-xs text-slate-500 mb-1">총 지급액</div><div className="text-base font-bold text-slate-700">{mGross.toLocaleString()}</div></div>
+                                    <div><div className="text-xs text-slate-500 mb-1">총 원천세</div><div className="text-base font-bold text-red-500">{mTax.toLocaleString()}</div></div>
+                                    <div><div className="text-xs text-indigo-500 font-bold mb-1">총 차인지급액</div><div className="text-lg font-black text-indigo-700">{mNet.toLocaleString()}</div></div>
                                 </div>
                             </div>
                         </div>
@@ -443,7 +443,7 @@ export const PayrollPage: React.FC = () => {
                 })}
             </div>
             
-            <div className="text-center text-slate-300 text-xs mt-10 mb-4">
+            <div className="text-center text-slate-300 text-sm mt-12 mb-6">
                 Boxing Gym Payroll System Final
             </div>
         </div>
@@ -452,21 +452,21 @@ export const PayrollPage: React.FC = () => {
         {isMasterModalOpen && (
             <div className="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-[60] flex items-center justify-center px-4">
                 <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
-                    <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-2xl">
-                        <h3 className="text-lg font-bold text-slate-800">코치 인적사항 관리</h3>
-                        <button onClick={() => setIsMasterModalOpen(false)} className="text-slate-400 hover:text-slate-600">✕</button>
+                    <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-2xl">
+                        <h3 className="text-xl font-bold text-slate-800">코치 인적사항 관리</h3>
+                        <button onClick={() => setIsMasterModalOpen(false)} className="text-slate-400 hover:text-slate-600 text-lg">✕</button>
                     </div>
                     
-                    <div className="p-5 overflow-y-auto flex-1">
-                        <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 mb-6">
-                            <h4 className="text-xs font-bold text-indigo-800 mb-3">✨ 신규 코치 등록</h4>
-                            <div className="space-y-2">
+                    <div className="p-6 overflow-y-auto flex-1">
+                        <div className="bg-indigo-50/50 p-5 rounded-xl border border-indigo-100 mb-8">
+                            <h4 className="text-sm font-bold text-indigo-800 mb-4">✨ 신규 코치 등록</h4>
+                            <div className="space-y-3">
                                 <input 
                                     type="text" 
                                     placeholder="이름 (예: 홍길동)" 
                                     value={newCoachName}
                                     onChange={(e) => setNewCoachName(e.target.value)}
-                                    className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" 
+                                    className="w-full px-4 py-3 rounded-lg border border-slate-200 text-base focus:ring-2 focus:ring-indigo-500 outline-none" 
                                 />
                                 <div>
                                     <input 
@@ -475,31 +475,31 @@ export const PayrollPage: React.FC = () => {
                                         value={newCoachJumin}
                                         onChange={handleNewJuminChange}
                                         maxLength={13}
-                                        className={`w-full px-3 py-2 rounded-lg border text-sm focus:ring-2 outline-none ${juminValidationMsg.includes('❌') ? 'border-red-300 focus:ring-red-200' : 'border-slate-200 focus:ring-indigo-500'}`}
+                                        className={`w-full px-4 py-3 rounded-lg border text-base focus:ring-2 outline-none ${juminValidationMsg.includes('❌') ? 'border-red-300 focus:ring-red-200' : 'border-slate-200 focus:ring-indigo-500'}`}
                                     />
                                     {juminValidationMsg && (
-                                        <p className={`text-[10px] mt-1 ml-1 ${juminValidationMsg.includes('✅') ? 'text-green-600' : 'text-red-500'}`}>
+                                        <p className={`text-xs mt-1 ml-1 ${juminValidationMsg.includes('✅') ? 'text-green-600' : 'text-red-500'}`}>
                                             {juminValidationMsg}
                                         </p>
                                     )}
                                 </div>
-                                <button onClick={addNewCoachToMaster} className="w-full bg-indigo-600 text-white font-bold py-2 rounded-lg text-sm hover:bg-indigo-700 mt-2">등록하기</button>
+                                <button onClick={addNewCoachToMaster} className="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg text-base hover:bg-indigo-700 mt-2">등록하기</button>
                             </div>
                         </div>
 
-                        <h4 className="text-xs font-bold text-slate-500 mb-3 ml-1">등록된 코치 명단</h4>
-                        <div className="space-y-3">
+                        <h4 className="text-sm font-bold text-slate-500 mb-3 ml-1">등록된 코치 명단</h4>
+                        <div className="space-y-4">
                             {db.coaches.length === 0 ? (
-                                <p className="text-center text-slate-400 text-xs py-4">등록된 코치가 없습니다.</p>
+                                <p className="text-center text-slate-400 text-sm py-4">등록된 코치가 없습니다.</p>
                             ) : (
                                 db.coaches.map(c => (
-                                    <div key={c.id} className="bg-white border border-slate-200 rounded-xl p-3 shadow-sm">
-                                        <div className="flex justify-between items-start mb-2">
+                                    <div key={c.id} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                                        <div className="flex justify-between items-start mb-3">
                                             <div>
-                                                <div className="font-bold text-slate-800">{c.name}</div>
+                                                <div className="font-bold text-slate-800 text-lg">{c.name}</div>
                                                 <div className="text-xs text-slate-400 mt-0.5">ID: {c.id.slice(-4)}</div>
                                             </div>
-                                            <button onClick={() => deleteMasterCoach(c.id)} className="text-xs text-red-400 hover:text-red-600 border border-slate-200 px-2 py-1 rounded">삭제</button>
+                                            <button onClick={() => deleteMasterCoach(c.id)} className="text-xs text-red-400 hover:text-red-600 border border-slate-200 px-3 py-1.5 rounded">삭제</button>
                                         </div>
                                         <div className="mt-2 flex gap-2">
                                             <input 
@@ -511,7 +511,7 @@ export const PayrollPage: React.FC = () => {
                                                     if(val !== c.jumin) updateCoachJumin(c.id, val);
                                                 }}
                                                 placeholder="주민번호 (숫자만)"
-                                                className="flex-1 bg-slate-50 border border-slate-100 rounded px-2 py-1 text-xs outline-none focus:ring-1 focus:ring-indigo-300 tracking-wider" 
+                                                className="flex-1 bg-slate-50 border border-slate-100 rounded px-3 py-2 text-base outline-none focus:ring-1 focus:ring-indigo-300 tracking-wider" 
                                             />
                                         </div>
                                     </div>
@@ -527,26 +527,26 @@ export const PayrollPage: React.FC = () => {
         {isRosterModalOpen && (
             <div className="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-[60] flex items-center justify-center px-4">
                 <div className="bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl">
-                    <h3 className="text-lg font-bold mb-4">{rosterTargetMonth + 1}월 근무자 추가</h3>
-                    <p className="text-xs text-slate-500 mb-4">이달 급여 대장에 포함할 코치를 선택하세요.</p>
+                    <h3 className="text-xl font-bold mb-4">{rosterTargetMonth + 1}월 근무자 추가</h3>
+                    <p className="text-sm text-slate-500 mb-6">이달 급여 대장에 포함할 코치를 선택하세요.</p>
                     
-                    <div className="space-y-2 max-h-60 overflow-y-auto mb-4 custom-scroll">
+                    <div className="space-y-3 max-h-60 overflow-y-auto mb-6 custom-scroll">
                         {(() => {
                             const currentRoster = db.rosters[`${selectedYear}-${rosterTargetMonth}`] || [];
                             const available = db.coaches.filter(c => !currentRoster.includes(c.id));
                             
-                            if (available.length === 0) return <p className="text-slate-400 text-sm text-center py-4">추가 가능한 코치가 없습니다.<br/>'코치 명단 관리'에서 신규 코치를 등록하세요.</p>;
+                            if (available.length === 0) return <p className="text-slate-400 text-base text-center py-4">추가 가능한 코치가 없습니다.<br/>'코치 명단 관리'에서 신규 코치를 등록하세요.</p>;
 
                             return available.map(c => (
-                                <button key={c.id} onClick={() => addToRoster(c.id)} className="w-full text-left flex justify-between items-center p-3 hover:bg-indigo-50 rounded-xl border border-slate-100 mb-2 group transition-colors">
-                                    <span className="font-bold text-slate-700">{c.name}</span>
-                                    <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded group-hover:bg-indigo-200 font-medium">추가하기 +</span>
+                                <button key={c.id} onClick={() => addToRoster(c.id)} className="w-full text-left flex justify-between items-center p-4 hover:bg-indigo-50 rounded-xl border border-slate-100 mb-2 group transition-colors">
+                                    <span className="font-bold text-slate-700 text-lg">{c.name}</span>
+                                    <span className="text-xs bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded group-hover:bg-indigo-200 font-medium">추가하기 +</span>
                                 </button>
                             ));
                         })()}
                     </div>
                     <div className="flex justify-end gap-2">
-                        <button onClick={() => setIsRosterModalOpen(false)} className="px-4 py-2 text-slate-500 font-medium hover:bg-slate-100 rounded-lg">닫기</button>
+                        <button onClick={() => setIsRosterModalOpen(false)} className="px-5 py-3 text-slate-500 font-medium hover:bg-slate-100 rounded-lg text-base">닫기</button>
                     </div>
                 </div>
             </div>

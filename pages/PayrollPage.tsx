@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as XLSX from 'xlsx';
 
 // Types for Payroll Data
 interface Coach {
@@ -63,6 +62,7 @@ export const PayrollPage: React.FC = () => {
   const [newCoachJumin, setNewCoachJumin] = useState('');
   const [juminValidationMsg, setJuminValidationMsg] = useState('');
   const [saveIndicator, setSaveIndicator] = useState('');
+  const [isExporting, setIsExporting] = useState(false); // New state for loading indicator
 
   // 1. Load Data on Mount
   useEffect(() => {
@@ -213,8 +213,8 @@ export const PayrollPage: React.FC = () => {
     saveData(newDb);
   };
 
-  // --- Logic: Excel Export & Email ---
-  const handleExcelAndEmail = () => {
+  // --- Logic: Excel Export & Email (Optimized with Dynamic Import) ---
+  const handleExcelAndEmail = async () => {
     // 1. Prepare Data
     const rows = [];
     // Header
@@ -238,7 +238,6 @@ export const PayrollPage: React.FC = () => {
              // Calculations
              const incomeTax = Math.floor(val * 0.03); // 3%
              const localTax = Math.floor(incomeTax * 0.1); // 10% of Income Tax (0.3% total)
-             // Or commonly 3.3% total. Let's use standard: Income Tax (3%) + Local Tax (0.3%)
              
              rows.push([
                `${selectedYear}-${String(m + 1).padStart(2, '0')}`, // 귀속년월
@@ -266,31 +265,42 @@ export const PayrollPage: React.FC = () => {
       return;
     }
 
-    // 2. Generate Excel File
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    
-    // Column Widths
-    ws['!cols'] = [
-      { wch: 10 }, { wch: 12 }, { wch: 10 }, { wch: 15 },
-      { wch: 20 }, { wch: 20 }, { wch: 10 }, { wch: 10 },
-      { wch: 12 }, { wch: 8 }, { wch: 10 }, { wch: 10 },
-      { wch: 10 }, { wch: 10 }
-    ];
+    try {
+        setIsExporting(true);
+        // Dynamic import of XLSX library
+        const XLSX = await import('xlsx');
 
-    XLSX.utils.book_append_sheet(wb, ws, "급여대장");
-    XLSX.writeFile(wb, `${selectedYear}_급여신고자료.xlsx`);
+        // 2. Generate Excel File
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(rows);
+        
+        // Column Widths
+        ws['!cols'] = [
+          { wch: 10 }, { wch: 12 }, { wch: 10 }, { wch: 15 },
+          { wch: 20 }, { wch: 20 }, { wch: 10 }, { wch: 10 },
+          { wch: 12 }, { wch: 8 }, { wch: 10 }, { wch: 10 },
+          { wch: 10 }, { wch: 10 }
+        ];
 
-    // 3. Alert Instructions for Mobile/Desktop
-    alert(`[파일 저장 완료]\n\n엑셀 파일이 기기에 저장되었습니다.\n• PC: '다운로드' 폴더 확인\n• 모바일: '내 파일' 또는 '파일' 앱 내의 다운로드 폴더 확인\n\n확인 버튼을 누르면 이메일 앱이 열립니다.\n저장된 파일을 직접 첨부해서 보내주세요.`);
+        XLSX.utils.book_append_sheet(wb, ws, "급여대장");
+        XLSX.writeFile(wb, `${selectedYear}_급여신고자료.xlsx`);
 
-    // 4. Open Email Client
-    const subject = encodeURIComponent(`${selectedYear}년 급여신고 자료 제출`);
-    const body = encodeURIComponent(
-      `세무사님 안녕하세요,\n\n${selectedYear}년도 체육관 급여신고 자료를 엑셀 파일로 송부드립니다.\n\n(다운로드된 엑셀 파일을 이 메일에 첨부하여 보내주세요.)\n\n감사합니다.`
-    );
-    
-    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        // 3. Alert Instructions for Mobile/Desktop
+        alert(`[파일 저장 완료]\n\n엑셀 파일이 기기에 저장되었습니다.\n• PC: '다운로드' 폴더 확인\n• 모바일: '내 파일' 또는 '파일' 앱 내의 다운로드 폴더 확인\n\n확인 버튼을 누르면 이메일 앱이 열립니다.\n저장된 파일을 직접 첨부해서 보내주세요.`);
+
+        // 4. Open Email Client
+        const subject = encodeURIComponent(`${selectedYear}년 급여신고 자료 제출`);
+        const body = encodeURIComponent(
+          `세무사님 안녕하세요,\n\n${selectedYear}년도 체육관 급여신고 자료를 엑셀 파일로 송부드립니다.\n\n(다운로드된 엑셀 파일을 이 메일에 첨부하여 보내주세요.)\n\n감사합니다.`
+        );
+        
+        window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    } catch (e) {
+        console.error("Excel export error:", e);
+        alert("엑셀 파일 생성 중 오류가 발생했습니다.");
+    } finally {
+        setIsExporting(false);
+    }
   };
 
   // Dashboard Stats
@@ -340,11 +350,22 @@ export const PayrollPage: React.FC = () => {
                     <button onClick={() => setIsMasterModalOpen(true)} className="bg-white border-2 border-slate-100 text-slate-700 py-4 rounded-xl font-bold text-base hover:border-indigo-200 hover:text-indigo-600 flex items-center justify-center gap-2 transition-all">
                         <span>👥</span> 코치 관리
                     </button>
-                    <button onClick={handleExcelAndEmail} className="bg-green-600 text-white py-4 rounded-xl font-bold text-base hover:bg-green-700 flex items-center justify-center gap-2 transition-all shadow-md shadow-green-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        세무사 전송 (엑셀)
+                    <button 
+                        onClick={handleExcelAndEmail} 
+                        disabled={isExporting}
+                        className="bg-green-600 text-white py-4 rounded-xl font-bold text-base hover:bg-green-700 flex items-center justify-center gap-2 transition-all shadow-md shadow-green-200 disabled:bg-green-400 disabled:cursor-not-allowed"
+                    >
+                        {isExporting ? (
+                            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        )}
+                        {isExporting ? "생성 중..." : "세무사 전송 (엑셀)"}
                     </button>
                 </div>
                 

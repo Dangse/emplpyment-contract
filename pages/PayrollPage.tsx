@@ -20,9 +20,6 @@ const validateJumin = (jumin: string): { isValid: boolean; message: string } => 
   if (cleanJumin.length !== 13) return { isValid: false, message: "13자리가 아닙니다." };
 
   // Checksum algorithm for Korean Resident Registration Number
-  // Logic: (2*1st + 3*2nd + ... + 5*12th) % 11
-  // Result = 11 - (Sum % 11)
-  // Last digit match check
   const weights = [2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5];
   let sum = 0;
   for (let i = 0; i < 12; i++) {
@@ -31,8 +28,6 @@ const validateJumin = (jumin: string): { isValid: boolean; message: string } => 
   const checkDigit = (11 - (sum % 11)) % 10;
   
   if (checkDigit !== parseInt(cleanJumin[12])) {
-    // Note: Some newer or foreigner numbers might fail standard checksum logic, 
-    // but for most standard cases this works. We will give a warning but not block completely in case of exceptions.
     return { isValid: false, message: "유효하지 않은 주민번호 형식입니다." };
   }
 
@@ -55,13 +50,13 @@ export const PayrollPage: React.FC = () => {
   // View Mode State (New Feature)
   const [viewMode, setViewMode] = useState<'monthly' | 'annual'>('monthly');
   const [focusedMonth, setFocusedMonth] = useState<number>(0);
-
+  
   // Modal States
   const [isMasterModalOpen, setIsMasterModalOpen] = useState(false);
   const [isRosterModalOpen, setIsRosterModalOpen] = useState(false);
   const [rosterTargetMonth, setRosterTargetMonth] = useState<number>(0);
   
-  // Email Guide Modal State (For iOS Compatibility)
+  // Email Guide Modal State
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [lastSavedFileName, setLastSavedFileName] = useState('');
   
@@ -70,7 +65,7 @@ export const PayrollPage: React.FC = () => {
   const [newCoachJumin, setNewCoachJumin] = useState('');
   const [juminValidationMsg, setJuminValidationMsg] = useState('');
   const [saveIndicator, setSaveIndicator] = useState('');
-  const [isExporting, setIsExporting] = useState(false); // New state for loading indicator
+  const [isExporting, setIsExporting] = useState(false);
 
   // 1. Load Data on Mount
   useEffect(() => {
@@ -94,7 +89,7 @@ export const PayrollPage: React.FC = () => {
 
     // Initialize Focus Month (Previous Month Logic)
     const now = new Date();
-    // Logic: If today is Feb (1), we focus Jan (0). If Jan (0), we focus Jan (0) of current year.
+    // Logic: If today is Feb (1), we focus Jan (0). If Jan (0), we focus Jan (0).
     let initMonth = now.getMonth() - 1;
     if (initMonth < 0) initMonth = 0; 
     setFocusedMonth(initMonth);
@@ -112,8 +107,8 @@ export const PayrollPage: React.FC = () => {
 
   // Jumin Input Handler
   const handleNewJuminChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/-/g, ''); // Auto strip hyphen
-    if (val.length > 13) return; // Limit length
+    const val = e.target.value.replace(/-/g, '');
+    if (val.length > 13) return;
     setNewCoachJumin(val);
     
     if (val.length > 0) {
@@ -139,13 +134,11 @@ export const PayrollPage: React.FC = () => {
       return;
     }
     
-    // Validate Jumin
     const validation = validateJumin(newCoachJumin);
     if (newCoachJumin && !validation.isValid) {
       if(!confirm(`주민번호 경고: ${validation.message}\n그래도 등록하시겠습니까?`)) return;
     }
 
-    // Check for Duplicate Jumin
     const isDuplicate = db.coaches.some(c => c.jumin === newCoachJumin);
     if (isDuplicate) {
         alert("이미 등록된 주민번호입니다. (중복)");
@@ -163,7 +156,6 @@ export const PayrollPage: React.FC = () => {
     const newDb = { ...db };
     newDb.coaches.push(newCoach);
     
-    // Auto-add to all rosters
     for(let m=0; m<12; m++) {
         if(!newDb.years[selectedYear]) newDb.years[selectedYear] = {};
         if(!newDb.years[selectedYear][newId]) newDb.years[selectedYear][newId] = Array(12).fill(0);
@@ -245,11 +237,9 @@ export const PayrollPage: React.FC = () => {
     saveData(newDb);
   };
 
-  // --- Logic: Excel Export & Email (Optimized with Dynamic Import) ---
+  // --- Logic: Excel Export ---
   const handleExcelAndEmail = async () => {
-    // 1. Prepare Data
     const rows = [];
-    // Header
     const headers = [
       "귀속년월", "지급년월일", "소득자명", "주민등록번호", 
       "기본주소", "상세주소", "소득구분", "영수일자", 
@@ -267,25 +257,13 @@ export const PayrollPage: React.FC = () => {
           hasData = true;
           const coach = db.coaches.find(c => c.id === id);
           if (coach) {
-             // Calculations
-             const incomeTax = Math.floor(val * 0.03); // 3%
-             const localTax = Math.floor(incomeTax * 0.1); // 10% of Income Tax (0.3% total)
+             const incomeTax = Math.floor(val * 0.03); 
+             const localTax = Math.floor(incomeTax * 0.1);
              
              rows.push([
-               `${selectedYear}-${String(m + 1).padStart(2, '0')}`, // 귀속년월
-               ``, // 지급년월일 (Leave blank)
-               coach.name, // 소득자명
-               coach.jumin.replace(/-/g, ''), // 주민등록번호 (No hyphens)
-               "", // 기본주소
-               "", // 상세주소
-               "사업소득", // 소득구분
-               "", // 영수일자
-               val, // 지급총액
-               "3.3", // 세율
-               incomeTax, // 소득세
-               localTax, // 지방소득세
-               "내국인", // 내.외국인구분
-               "" // 연말정산
+               `${selectedYear}-${String(m + 1).padStart(2, '0')}`,
+               ``, coach.name, coach.jumin.replace(/-/g, ''), 
+               "", "", "사업소득", "", val, "3.3", incomeTax, localTax, "내국인", ""
              ]);
           }
         }
@@ -299,14 +277,11 @@ export const PayrollPage: React.FC = () => {
 
     try {
         setIsExporting(true);
-        // Dynamic import of XLSX library
         const XLSX = await import('xlsx');
 
-        // 2. Generate Excel File
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.aoa_to_sheet(rows);
         
-        // Column Widths
         ws['!cols'] = [
           { wch: 10 }, { wch: 12 }, { wch: 10 }, { wch: 15 },
           { wch: 20 }, { wch: 20 }, { wch: 10 }, { wch: 10 },
@@ -316,7 +291,6 @@ export const PayrollPage: React.FC = () => {
 
         XLSX.utils.book_append_sheet(wb, ws, "급여대장");
         
-        // Generate a unique filename with timestamp
         const now = new Date();
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const day = String(now.getDate()).padStart(2, '0');
@@ -326,7 +300,6 @@ export const PayrollPage: React.FC = () => {
         
         XLSX.writeFile(wb, fileName);
 
-        // 3. Open Custom Guide Modal (Instead of Alert) for iOS Compatibility
         setLastSavedFileName(fileName);
         setIsEmailModalOpen(true);
 
@@ -338,14 +311,13 @@ export const PayrollPage: React.FC = () => {
     }
   };
 
-  // Actual Mailto trigger (Called by user click in modal)
-  const launchEmailApp = () => {
-    const subject = encodeURIComponent(`${selectedYear}년 급여신고 자료 제출`);
-    const body = encodeURIComponent(
-      `세무사님 안녕하세요,\n\n${selectedYear}년도 체육관 급여신고 자료를 엑셀 파일로 송부드립니다.\n\n(다운로드된 '${lastSavedFileName}' 파일을 찾아 첨부해주세요.)\n\n감사합니다.`
-    );
-    window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    setIsEmailModalOpen(false);
+  // Create mailto link dynamically
+  const getMailtoLink = () => {
+      const subject = encodeURIComponent(`${selectedYear}년 급여신고 자료 제출`);
+      const body = encodeURIComponent(
+        `세무사님 안녕하세요,\n\n${selectedYear}년도 체육관 급여신고 자료를 엑셀 파일로 송부드립니다.\n\n(다운로드된 '${lastSavedFileName}' 파일을 찾아 첨부해주세요.)\n\n감사합니다.`
+      );
+      return `mailto:?subject=${subject}&body=${body}`;
   };
 
   // Dashboard Stats
@@ -583,12 +555,13 @@ export const PayrollPage: React.FC = () => {
                         파일을 꼭 메일에 첨부해주세요.
                     </p>
                     
-                    <button 
-                        onClick={launchEmailApp}
-                        className="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl text-lg hover:bg-slate-800 flex items-center justify-center gap-2 shadow-lg shadow-slate-200 transition-all active:scale-95"
+                    <a 
+                        href={getMailtoLink()}
+                        onClick={() => setTimeout(() => setIsEmailModalOpen(false), 1000)}
+                        className="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl text-lg hover:bg-slate-800 flex items-center justify-center gap-2 shadow-lg shadow-slate-200 transition-all active:scale-95 no-underline"
                     >
                         <span>📧</span> 이메일 앱 실행하기
-                    </button>
+                    </a>
                      <button onClick={() => setIsEmailModalOpen(false)} className="w-full mt-3 text-slate-400 text-sm py-2 hover:text-slate-600">
                         닫기
                     </button>

@@ -20,7 +20,7 @@ export const ResultView: React.FC<ResultViewProps> = ({ content, onReset }) => {
       await navigator.clipboard.writeText(plainText);
       alert('계약서 내용이 클립보드에 복사되었습니다.');
     } catch (err) {
-      alert('복사에 실패했습니다.');
+      alert('복사에 실패했습니다. 브라우저 권한을 확인해주세요.');
     }
   };
 
@@ -89,9 +89,7 @@ export const ResultView: React.FC<ResultViewProps> = ({ content, onReset }) => {
 
           {/* Contract Content - A4 sized simulation */}
           <div ref={printRef} className="print-area p-10 md:p-16 bg-white text-slate-900">
-            <div className="mb-12 text-center pb-8 border-b-4 border-double border-slate-900">
-              <div className="inline-block border-2 border-slate-900 px-3 py-1 text-lg font-bold font-serif mb-4">DH 대한세무법인</div>
-            </div>
+            {/* REMOVED DH TAX HEADER AS REQUESTED */}
             {renderFormattedContent(content)}
              <div className="mt-16 pt-8 border-t border-slate-300 text-center text-slate-500 text-xs font-serif">
               DH Tax Firm Contract Generation Service

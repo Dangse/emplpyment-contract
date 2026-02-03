@@ -57,9 +57,7 @@ export const InputForm: React.FC<InputFormProps> = ({ type, initialData, onSubmi
             </h2>
             <p className="text-slate-500 mt-2 text-sm">법률적 효력을 위해 정확한 정보를 입력해 주십시오.</p>
           </div>
-          <span className="text-xs text-slate-400 font-medium px-2 py-1 bg-slate-50 rounded">
-            DH 대한세무법인
-          </span>
+          
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
@@ -74,7 +72,7 @@ export const InputForm: React.FC<InputFormProps> = ({ type, initialData, onSubmi
                 name="partyA" 
                 value={formData.partyA} 
                 onChange={handleChange} 
-                placeholder="예: 주식회사 000 대표 홍길동"
+                placeholder="예: ㅇㅇ 권투체육관 "
                 required 
               />
               <InputField 
@@ -103,7 +101,7 @@ export const InputForm: React.FC<InputFormProps> = ({ type, initialData, onSubmi
                 required 
               />
               <InputField 
-                label="계약 종료일 (선택)" 
+                label="계약 종료일 (선택임.정함이 없는 경우 안써도 됨)" 
                 type="date" 
                 name="endDate" 
                 value={formData.endDate || ''} 
@@ -114,36 +112,15 @@ export const InputForm: React.FC<InputFormProps> = ({ type, initialData, onSubmi
             {isEmployment ? (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                   <InputField 
-                    label="근무 장소" 
-                    name="workLocation" 
-                    value={formData.workLocation || ''} 
-                    onChange={handleChange} 
-                    placeholder="예: 서울시 강남구 본사 사무실"
-                    required
-                  />
-                  <InputField 
-                    label="업무 내용 (직위)" 
-                    name="jobTitle" 
-                    value={formData.jobTitle || ''} 
-                    onChange={handleChange} 
-                    placeholder="예: 마케팅 팀장 / 웹 개발 업무"
-                    required
-                  />
+                   
+                  
                 </div>
-                <InputField 
-                  label="근로 시간 및 휴게 시간" 
-                  name="workingHours" 
-                  value={formData.workingHours || ''} 
-                  onChange={handleChange} 
-                  placeholder="예: 09:00~18:00 (휴게시간 12:00~13:00)"
-                  required
-                />
+               
               </>
             ) : (
               <>
                 <InputField 
-                  label="프로젝트/업무 범위" 
+                  label="업무 범위" 
                   name="projectScope" 
                   value={formData.projectScope || ''} 
                   onChange={handleChange} 
@@ -151,14 +128,7 @@ export const InputForm: React.FC<InputFormProps> = ({ type, initialData, onSubmi
                   textarea
                   required
                 />
-                <InputField 
-                  label="" 
-                  name="deliverables" 
-                  value={formData.deliverables || ''} 
-                  onChange={handleChange} 
-                  placeholder="예: 디자인 원본 파일(PSD), 퍼블리싱 소스코드(HTML/CSS)"
-                  required
-                />
+                
               </>
             )}
           </div>
@@ -170,11 +140,11 @@ export const InputForm: React.FC<InputFormProps> = ({ type, initialData, onSubmi
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <InputField 
-                label={isEmployment ? "임금 (월급/연봉)" : "프리랜서지급액 (총액)"} 
+                label={isEmployment ? "임금 (월급/연봉)" : "지급 기준 (성과급 등)"} 
                 name="paymentAmount" 
                 value={formData.paymentAmount} 
                 onChange={handleChange} 
-                placeholder={isEmployment ? "예: 월 3,000,000원 (세전)" : " 예 프리랜서 지급액 "}
+                placeholder={isEmployment ? "예: 월 3,000,000원 (세전)" : "예: 수업 1회당 3만원, 또는 매월 매출의 50% 지급"}
                 required 
               />
                <InputField 
@@ -182,7 +152,7 @@ export const InputForm: React.FC<InputFormProps> = ({ type, initialData, onSubmi
                 name="paymentTerms" 
                 value={formData.paymentTerms} 
                 onChange={handleChange} 
-                placeholder={isEmployment ? "예: 매월 25일 근로자 계좌로 입금" : "매월25일 프리랜서 지급액 "}
+                placeholder={isEmployment ? "예: 매월 25일 근로자 계좌로 입금" : "예: 익월 10일 계좌 이체"}
                 required 
               />
             </div>

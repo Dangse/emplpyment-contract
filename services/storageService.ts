@@ -29,3 +29,15 @@ export const getHistory = (): ContractHistoryItem[] => {
     return [];
   }
 };
+
+export const deleteHistory = (id: string): ContractHistoryItem[] => {
+  try {
+    const existing = getHistory();
+    const updated = existing.filter(item => item.id !== id);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    return updated;
+  } catch (e) {
+    console.error("Failed to delete history item", e);
+    return [];
+  }
+};

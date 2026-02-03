@@ -5,9 +5,10 @@ interface SelectionScreenProps {
   onSelect: (type: ContractType) => void;
   history: ContractHistoryItem[];
   onLoadHistory: (item: ContractHistoryItem) => void;
+  onDeleteHistory: (id: string) => void;
 }
 
-export const SelectionScreen: React.FC<SelectionScreenProps> = ({ onSelect, history, onLoadHistory }) => {
+export const SelectionScreen: React.FC<SelectionScreenProps> = ({ onSelect, history, onLoadHistory, onDeleteHistory }) => {
   return (
     <div className="max-w-5xl mx-auto px-4 py-16">
       <div className="text-center mb-16">
@@ -63,17 +64,33 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({ onSelect, hist
               <div 
                 key={item.id}
                 onClick={() => onLoadHistory(item)}
-                className="bg-white p-5 rounded-lg border border-slate-200 hover:border-slate-400 hover:shadow-md cursor-pointer transition-all"
+                className="group/item relative bg-white p-5 rounded-lg border border-slate-200 hover:border-slate-400 hover:shadow-md cursor-pointer transition-all"
               >
                 <div className="flex justify-between items-start mb-2">
                   <span className={`text-xs px-2 py-1 rounded font-medium ${item.type === ContractType.EMPLOYMENT ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-800'}`}>
                     {item.type === ContractType.EMPLOYMENT ? '근로계약' : '프리랜서'}
                   </span>
-                  <span className="text-xs text-slate-400">
-                    {new Date(item.timestamp).toLocaleDateString()}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-400">
+                        {new Date(item.timestamp).toLocaleDateString()}
+                    </span>
+                    <button 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if(window.confirm('삭제하시겠습니까?')) {
+                                onDeleteHistory(item.id);
+                            }
+                        }}
+                        className="text-slate-300 hover:text-red-500 p-1 rounded-full hover:bg-red-50 transition-colors"
+                        title="삭제"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                  </div>
                 </div>
-                <div className="font-medium text-slate-800 truncate">
+                <div className="font-medium text-slate-800 truncate pr-6">
                   {item.formData.partyA} - {item.formData.partyB}
                 </div>
                 <div className="text-sm text-slate-500 mt-1 truncate">

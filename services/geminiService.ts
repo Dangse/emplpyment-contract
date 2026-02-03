@@ -20,8 +20,6 @@ const buildPrompt = (type: ContractType, data: ContractFormData): string => {
   - 을(근로자/프리랜서): ${data.partyB}
   - 계약 시작일: ${data.startDate}
   - 계약 종료일: ${data.endDate || '기간 정함 없음 (정규직 또는 프로젝트 완료 시까지)'}
-  - 금액/급여: ${data.paymentAmount}
-  - 지급 조건/방법: ${data.paymentTerms}
   - 추가 특약 사항: ${data.additionalTerms || '없음'}
   `;
 
@@ -32,14 +30,22 @@ const buildPrompt = (type: ContractType, data: ContractFormData): string => {
     - 근무 장소: ${data.workLocation || '회사 지정 장소'}
     - 업무 내용(직위): ${data.jobTitle || '지정된 업무'}
     - 근로 시간/휴게 시간: ${data.workingHours || '법정 근로시간 준수'}
+    - 임금: ${data.paymentAmount}
+    - 지급 방법: ${data.paymentTerms}
     - 수습 기간: ${data.probationPeriod || '없음'}
     `;
   } else {
     return `
     다음 정보를 바탕으로 '프리랜서 업무 위탁(용역) 계약서'를 작성해줘:
     ${commonInfo}
-    - 프로젝트/업무 범위: ${data.projectScope || '상호 협의된 업무'}
+    - 업무 범위: ${data.projectScope || '상호 협의된 업무'}
     - 결과물(납품 대상): ${data.deliverables || '완성된 결과물'}
+    
+    [중요: 대금 지급 및 세금 조건]
+    1. 보수 지급 기준: "${data.paymentAmount}" 
+       (총액 계약이 아니며, 매월 성과 또는 업무 수행 결과에 따라 지급한다는 취지로 작성할 것)
+    2. 지급 시기: ${data.paymentTerms}
+    3. 세금 처리: "을"은 3.3% 인적용역 사업소득세 납부 대상자이므로, "갑"은 소득세 및 지방소득세(총 3.3%)를 원천징수하고 지급한다. **부가가치세(VAT)는 별도로 발생하지 않음을 명시할 것.**
     `;
   }
 };

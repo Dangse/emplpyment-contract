@@ -5,7 +5,7 @@ import { SelectionScreen } from '../components/SelectionScreen';
 import { InputForm } from '../components/InputForm';
 import { ResultView } from '../components/ResultView';
 import { generateContractContent } from '../services/geminiService';
-import { saveHistory, getHistory } from '../services/storageService';
+import { saveHistory, getHistory, deleteHistory } from '../services/storageService';
 
 export const ContractPage: React.FC = () => {
   const navigate = useNavigate();
@@ -30,6 +30,11 @@ export const ContractPage: React.FC = () => {
     setContractType(item.type);
     setFormData(item.formData);
     setStep('form');
+  };
+
+  const handleDeleteHistory = (id: string) => {
+    const updated = deleteHistory(id);
+    setHistory(updated);
   };
 
   const handleFormSubmit = async (data: ContractFormData) => {
@@ -91,6 +96,7 @@ export const ContractPage: React.FC = () => {
             onSelect={handleTypeSelect} 
             history={history}
             onLoadHistory={handleHistorySelect}
+            onDeleteHistory={handleDeleteHistory}
           />
         )}
 

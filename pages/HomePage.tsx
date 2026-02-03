@@ -42,11 +42,7 @@ export const HomePage: React.FC = () => {
         
         {/* Hero Section */}
         <div className="text-center mb-16 md:mb-24 max-w-4xl mx-auto space-y-8 animate-fade-in-up">
-          <div className="inline-block px-4 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-4">
-             <span className="bg-gradient-to-r from-indigo-500 to-blue-600 bg-clip-text text-transparent text-xs md:text-sm font-bold tracking-wide uppercase">
-               Next Generation Tax & Labor Solution
-             </span>
-          </div>
+          
           
           <h1 className="text-5xl md:text-7xl font-bold text-slate-900 font-serif leading-[1.1] tracking-tight">
             관장님 덕분에 <br className="hidden md:block"/>

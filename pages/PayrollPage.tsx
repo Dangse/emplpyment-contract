@@ -311,14 +311,16 @@ export const PayrollPage: React.FC = () => {
     }
   };
 
-  // Create mailto link dynamically
-  const getMailtoLink = () => {
-      const subject = encodeURIComponent(`${selectedYear}년 급여신고 자료 제출`);
-      const body = encodeURIComponent(
-        `세무사님 안녕하세요,\n\n${selectedYear}년도 체육관 급여신고 자료를 엑셀 파일로 송부드립니다.\n\n(다운로드된 '${lastSavedFileName}' 파일을 찾아 첨부해주세요.)\n\n감사합니다.`
-      );
-      return `mailto:?subject=${subject}&body=${body}`;
-  };
+  // Helper: Prepare email content
+  const getEmailSubject = () => encodeURIComponent(`${selectedYear}년 급여신고 자료 제출`);
+  const getEmailBody = () => encodeURIComponent(
+    `세무사님 안녕하세요,\n\n${selectedYear}년도 체육관 급여신고 자료를 엑셀 파일로 송부드립니다.\n\n(다운로드된 '${lastSavedFileName}' 파일을 찾아 첨부해주세요.)\n\n감사합니다.`
+  );
+
+  // Link Generators
+  const getMailtoLink = () => `mailto:?subject=${getEmailSubject()}&body=${getEmailBody()}`;
+  const getNaverMailLink = () => `https://mail.naver.com/write/popup?title=${getEmailSubject()}&content=${getEmailBody()}`;
+  const getGmailLink = () => `https://mail.google.com/mail/?view=cm&fs=1&su=${getEmailSubject()}&body=${getEmailBody()}`;
 
   // Dashboard Stats
   const { yGross, yTax, yNet } = (() => {
@@ -549,19 +551,43 @@ export const PayrollPage: React.FC = () => {
                         </svg>
                     </div>
                     <h3 className="text-xl font-black text-center text-slate-800 mb-2">파일 저장 완료!</h3>
-                    <p className="text-sm text-slate-500 text-center mb-6 leading-relaxed">
+                    <p className="text-sm text-slate-500 text-center mb-4 leading-relaxed">
                         엑셀 파일이 기기에 저장되었습니다.<br/>
                         <span className="text-indigo-600 font-bold underline decoration-indigo-300 underline-offset-2">{lastSavedFileName}</span><br/>
                         파일을 꼭 메일에 첨부해주세요.
                     </p>
                     
-                    <a 
-                        href={getMailtoLink()}
-                        onClick={() => setTimeout(() => setIsEmailModalOpen(false), 1000)}
-                        className="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl text-lg hover:bg-slate-800 flex items-center justify-center gap-2 shadow-lg shadow-slate-200 transition-all active:scale-95 no-underline"
-                    >
-                        <span>📧</span> 이메일 앱 실행하기
-                    </a>
+                    <div className="space-y-2">
+                        <a 
+                            href={getMailtoLink()}
+                            onClick={() => setTimeout(() => setIsEmailModalOpen(false), 1000)}
+                            className="w-full bg-slate-800 text-white font-bold py-3 rounded-xl text-base hover:bg-slate-700 flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 no-underline"
+                        >
+                            <span>📱</span> 이메일 앱 (모바일/아웃룩)
+                        </a>
+                        
+                        <div className="grid grid-cols-2 gap-2">
+                             <a 
+                                href={getNaverMailLink()}
+                                target="_blank"
+                                rel="noreferrer"
+                                onClick={() => setTimeout(() => setIsEmailModalOpen(false), 1000)}
+                                className="w-full bg-[#03C75A] text-white font-bold py-3 rounded-xl text-sm hover:bg-[#02b350] flex items-center justify-center gap-1 shadow-sm transition-all active:scale-95 no-underline"
+                            >
+                                <span>N</span> 네이버 메일
+                            </a>
+                            <a 
+                                href={getGmailLink()}
+                                target="_blank"
+                                rel="noreferrer"
+                                onClick={() => setTimeout(() => setIsEmailModalOpen(false), 1000)}
+                                className="w-full bg-red-50 border border-red-100 text-red-600 font-bold py-3 rounded-xl text-sm hover:bg-red-100 flex items-center justify-center gap-1 shadow-sm transition-all active:scale-95 no-underline"
+                            >
+                                <span>G</span> Gmail (PC)
+                            </a>
+                        </div>
+                    </div>
+
                      <button onClick={() => setIsEmailModalOpen(false)} className="w-full mt-3 text-slate-400 text-sm py-2 hover:text-slate-600">
                         닫기
                     </button>

@@ -123,7 +123,7 @@ export const PayrollPage: React.FC = () => {
   const saveData = (newDb: DB) => {
     setDb(newDb);
     localStorage.setItem('boxing_payroll_v6_final', JSON.stringify(newDb));
-    setSaveIndicator("● 이 기계에서 바로저장 중..");
+    setSaveIndicator("● 바로저장 중..");
     setTimeout(() => setSaveIndicator(""), 1500);
   };
 
@@ -554,7 +554,7 @@ export const PayrollPage: React.FC = () => {
                     <p className="text-sm text-slate-500 text-center mb-4 leading-relaxed">
                         엑셀 파일이 기기에 저장되었습니다.<br/>
                         <span className="text-indigo-600 font-bold underline decoration-indigo-300 underline-offset-2">{lastSavedFileName}</span><br/>
-                        파일을 꼭 메일에 첨부해주세요.
+                        파일을 메일이나 <span className="font-bold text-slate-800">카카오톡 채팅창</span>에 첨부해주세요.
                     </p>
                     
                     <div className="space-y-2">
@@ -586,6 +586,16 @@ export const PayrollPage: React.FC = () => {
                                 <span>G</span> Gmail (PC)
                             </a>
                         </div>
+                        
+                        <a 
+                            href="http://pf.kakao.com/_ddxbxcu/chat"
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={() => setTimeout(() => setIsEmailModalOpen(false), 1000)}
+                            className="w-full bg-[#FAE100] text-[#371D1E] font-bold py-3 rounded-xl text-base hover:bg-[#F8D000] flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 no-underline mt-2"
+                        >
+                            <span className="text-xl">💬</span> 카카오톡으로 파일 보내기
+                        </a>
                     </div>
 
                      <button onClick={() => setIsEmailModalOpen(false)} className="w-full mt-3 text-slate-400 text-sm py-2 hover:text-slate-600">

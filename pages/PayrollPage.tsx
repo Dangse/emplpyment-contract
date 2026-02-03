@@ -290,15 +290,24 @@ export const PayrollPage: React.FC = () => {
         ];
 
         XLSX.utils.book_append_sheet(wb, ws, "급여대장");
-        XLSX.writeFile(wb, `${selectedYear}_급여신고자료.xlsx`);
+        
+        // Generate a unique filename with timestamp to avoid mobile download confusion
+        const now = new Date();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const fileName = `${selectedYear}년_급여자료_${month}월${day}일_${hours}시${minutes}분.xlsx`;
+        
+        XLSX.writeFile(wb, fileName);
 
         // 3. Alert Instructions for Mobile/Desktop
-        alert(`[파일 저장 완료]\n\n엑셀 파일이 기기에 저장되었습니다.\n• PC: '다운로드' 폴더 확인\n• 모바일: '내 파일' 또는 '파일' 앱 내의 다운로드 폴더 확인\n\n확인 버튼을 누르면 이메일 앱이 열립니다.\n저장된 파일을 직접 첨부해서 보내주세요.`);
+        alert(`[파일 저장 완료]\n\n엑셀 파일이 기기에 저장되었습니다.\n(파일명: ${fileName})\n\n• PC: '다운로드' 폴더 확인\n• 모바일: '내 파일' 또는 '파일' 앱 내의 다운로드 폴더 확인\n\n확인 버튼을 누르면 이메일 앱이 열립니다.\n저장된 파일을 직접 첨부해서 보내주세요.`);
 
         // 4. Open Email Client
         const subject = encodeURIComponent(`${selectedYear}년 급여신고 자료 제출`);
         const body = encodeURIComponent(
-          `세무사님 안녕하세요,\n\n${selectedYear}년도 체육관 급여신고 자료를 엑셀 파일로 송부드립니다.\n\n(다운로드된 엑셀 파일을 이 메일에 첨부하여 보내주세요.)\n\n감사합니다.`
+          `세무사님 안녕하세요,\n\n${selectedYear}년도 체육관 급여신고 자료를 엑셀 파일로 송부드립니다.\n\n(다운로드 폴더에서 '${fileName}' 파일을 찾아 첨부해주세요.)\n\n감사합니다.`
         );
         
         window.location.href = `mailto:?subject=${subject}&body=${body}`;

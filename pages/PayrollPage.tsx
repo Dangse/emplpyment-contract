@@ -120,6 +120,13 @@ export const PayrollPage: React.FC = () => {
       if(!confirm(`주민번호 경고: ${validation.message}\n그래도 등록하시겠습니까?`)) return;
     }
 
+    // Check for Duplicate Jumin
+    const isDuplicate = db.coaches.some(c => c.jumin === newCoachJumin);
+    if (isDuplicate) {
+        alert("이미 등록된 주민번호입니다. (중복)");
+        return;
+    }
+
     if (db.coaches.length >= 20) {
       alert("코치 등록은 최대 20명까지 가능합니다.");
       return;
@@ -487,7 +494,7 @@ export const PayrollPage: React.FC = () => {
                                     placeholder="이름 (예: 홍길동)" 
                                     value={newCoachName}
                                     onChange={(e) => setNewCoachName(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-lg border border-slate-200 text-base focus:ring-2 focus:ring-indigo-500 outline-none" 
+                                    className="w-full px-4 py-3 rounded-lg border border-slate-200 text-base focus:ring-2 focus:ring-indigo-500 outline-none bg-white text-slate-900" 
                                 />
                                 <div>
                                     <input 
@@ -496,7 +503,7 @@ export const PayrollPage: React.FC = () => {
                                         value={newCoachJumin}
                                         onChange={handleNewJuminChange}
                                         maxLength={13}
-                                        className={`w-full px-4 py-3 rounded-lg border text-base focus:ring-2 outline-none ${juminValidationMsg.includes('❌') ? 'border-red-300 focus:ring-red-200' : 'border-slate-200 focus:ring-indigo-500'}`}
+                                        className={`w-full px-4 py-3 rounded-lg border text-base focus:ring-2 outline-none bg-white text-slate-900 ${juminValidationMsg.includes('❌') ? 'border-red-300 focus:ring-red-200' : 'border-slate-200 focus:ring-indigo-500'}`}
                                     />
                                     {juminValidationMsg && (
                                         <p className={`text-xs mt-1 ml-1 ${juminValidationMsg.includes('✅') ? 'text-green-600' : 'text-red-500'}`}>

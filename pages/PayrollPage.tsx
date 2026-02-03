@@ -52,10 +52,18 @@ export const PayrollPage: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
   const [availableYears, setAvailableYears] = useState<string[]>([CURRENT_YEAR]);
   
+  // View Mode State (New Feature)
+  const [viewMode, setViewMode] = useState<'monthly' | 'annual'>('monthly');
+  const [focusedMonth, setFocusedMonth] = useState<number>(0);
+
   // Modal States
   const [isMasterModalOpen, setIsMasterModalOpen] = useState(false);
   const [isRosterModalOpen, setIsRosterModalOpen] = useState(false);
   const [rosterTargetMonth, setRosterTargetMonth] = useState<number>(0);
+  
+  // Email Guide Modal State (For iOS Compatibility)
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [lastSavedFileName, setLastSavedFileName] = useState('');
   
   // Input States
   const [newCoachName, setNewCoachName] = useState('');
@@ -83,7 +91,24 @@ export const PayrollPage: React.FC = () => {
             years: { [CURRENT_YEAR]: {} }
          }));
     }
+
+    // Initialize Focus Month (Previous Month Logic)
+    const now = new Date();
+    // Logic: If today is Feb (1), we focus Jan (0). If Jan (0), we focus Jan (0) of current year.
+    let initMonth = now.getMonth() - 1;
+    if (initMonth < 0) initMonth = 0; 
+    setFocusedMonth(initMonth);
+
   }, [CURRENT_YEAR]);
+
+  // View Navigation Handlers
+  const handlePrevMonth = () => {
+    if (focusedMonth > 0) setFocusedMonth(focusedMonth - 1);
+  };
+
+  const handleNextMonth = () => {
+    if (focusedMonth < 11) setFocusedMonth(focusedMonth + 1);
+  };
 
   // Jumin Input Handler
   const handleNewJuminChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -291,7 +316,7 @@ export const PayrollPage: React.FC = () => {
 
         XLSX.utils.book_append_sheet(wb, ws, "급여대장");
         
-        // Generate a unique filename with timestamp to avoid mobile download confusion
+        // Generate a unique filename with timestamp
         const now = new Date();
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const day = String(now.getDate()).padStart(2, '0');
@@ -301,22 +326,26 @@ export const PayrollPage: React.FC = () => {
         
         XLSX.writeFile(wb, fileName);
 
-        // 3. Alert Instructions for Mobile/Desktop
-        alert(`[파일 저장 완료]\n\n엑셀 파일이 기기에 저장되었습니다.\n(파일명: ${fileName})\n\n• PC: '다운로드' 폴더 확인\n• 모바일: '내 파일' 또는 '파일' 앱 내의 다운로드 폴더 확인\n\n확인 버튼을 누르면 이메일 앱이 열립니다.\n저장된 파일을 직접 첨부해서 보내주세요.`);
+        // 3. Open Custom Guide Modal (Instead of Alert) for iOS Compatibility
+        setLastSavedFileName(fileName);
+        setIsEmailModalOpen(true);
 
-        // 4. Open Email Client
-        const subject = encodeURIComponent(`${selectedYear}년 급여신고 자료 제출`);
-        const body = encodeURIComponent(
-          `세무사님 안녕하세요,\n\n${selectedYear}년도 체육관 급여신고 자료를 엑셀 파일로 송부드립니다.\n\n(다운로드 폴더에서 '${fileName}' 파일을 찾아 첨부해주세요.)\n\n감사합니다.`
-        );
-        
-        window.location.href = `mailto:?subject=${subject}&body=${body}`;
     } catch (e) {
         console.error("Excel export error:", e);
         alert("엑셀 파일 생성 중 오류가 발생했습니다.");
     } finally {
         setIsExporting(false);
     }
+  };
+
+  // Actual Mailto trigger (Called by user click in modal)
+  const launchEmailApp = () => {
+    const subject = encodeURIComponent(`${selectedYear}년 급여신고 자료 제출`);
+    const body = encodeURIComponent(
+      `세무사님 안녕하세요,\n\n${selectedYear}년도 체육관 급여신고 자료를 엑셀 파일로 송부드립니다.\n\n(다운로드된 '${lastSavedFileName}' 파일을 찾아 첨부해주세요.)\n\n감사합니다.`
+    );
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    setIsEmailModalOpen(false);
   };
 
   // Dashboard Stats
@@ -409,9 +438,61 @@ export const PayrollPage: React.FC = () => {
                 </div>
             </div>
 
+            {/* View Mode Switcher */}
+            <div className="flex justify-center mb-6">
+                <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex items-center gap-1 w-full max-w-sm">
+                    <button 
+                        onClick={() => setViewMode('monthly')}
+                        className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${viewMode === 'monthly' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}
+                    >
+                        📅 월별 보기 (집중)
+                    </button>
+                    <button 
+                        onClick={() => setViewMode('annual')}
+                        className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${viewMode === 'annual' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}
+                    >
+                        📂 전체 보기 (1~12월)
+                    </button>
+                </div>
+            </div>
+
+            {/* Navigation for Monthly View */}
+            {viewMode === 'monthly' && (
+                <div className="flex items-center justify-between mb-4 px-2">
+                    <button 
+                        onClick={handlePrevMonth}
+                        disabled={focusedMonth === 0}
+                        className={`flex items-center text-sm font-bold py-2 px-3 rounded-lg transition-colors ${focusedMonth === 0 ? 'text-slate-300 cursor-not-allowed' : 'text-indigo-600 bg-indigo-50 hover:bg-indigo-100'}`}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                        이전달
+                    </button>
+                    
+                    <span className="text-lg font-black text-slate-800">
+                        {focusedMonth + 1}월 급여
+                    </span>
+
+                    <button 
+                        onClick={handleNextMonth}
+                        disabled={focusedMonth === 11}
+                        className={`flex items-center text-sm font-bold py-2 px-3 rounded-lg transition-colors ${focusedMonth === 11 ? 'text-slate-300 cursor-not-allowed' : 'text-indigo-600 bg-indigo-50 hover:bg-indigo-100'}`}
+                    >
+                        다음달
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            )}
+
             {/* Month Cards */}
             <div className="space-y-8">
                 {Array.from({length: 12}).map((_, i) => {
+                    // Filter Logic: If monthly view, show ONLY focused month
+                    if (viewMode === 'monthly' && i !== focusedMonth) return null;
+
                     const monthIndex = i;
                     const rosterIds = db.rosters[`${selectedYear}-${monthIndex}`] || [];
                     const roster = rosterIds.map(id => db.coaches.find(c => c.id === id)).filter(c => c) as Coach[];
@@ -425,7 +506,7 @@ export const PayrollPage: React.FC = () => {
                     mNet = mGross - mTax;
 
                     return (
-                        <div key={i} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div key={i} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden animate-fade-in-up">
                             <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center">
                                 <h3 className="text-2xl font-black text-slate-800">{monthIndex + 1}월</h3>
                                 <button onClick={() => openRosterAddModal(monthIndex)} className="text-sm bg-white border border-slate-200 text-indigo-600 font-bold px-4 py-2 rounded-lg hover:bg-indigo-50 shadow-sm">+ 근무자 추가</button>
@@ -485,6 +566,35 @@ export const PayrollPage: React.FC = () => {
                 Boxing Gym Payroll System Final
             </div>
         </div>
+
+        {/* Modal: Email Guide for iOS Compatibility */}
+        {isEmailModalOpen && (
+             <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[70] flex items-center justify-center px-4">
+                <div className="bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-fade-in-up">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-4 mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <h3 className="text-xl font-black text-center text-slate-800 mb-2">파일 저장 완료!</h3>
+                    <p className="text-sm text-slate-500 text-center mb-6 leading-relaxed">
+                        엑셀 파일이 기기에 저장되었습니다.<br/>
+                        <span className="text-indigo-600 font-bold underline decoration-indigo-300 underline-offset-2">{lastSavedFileName}</span><br/>
+                        파일을 꼭 메일에 첨부해주세요.
+                    </p>
+                    
+                    <button 
+                        onClick={launchEmailApp}
+                        className="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl text-lg hover:bg-slate-800 flex items-center justify-center gap-2 shadow-lg shadow-slate-200 transition-all active:scale-95"
+                    >
+                        <span>📧</span> 이메일 앱 실행하기
+                    </button>
+                     <button onClick={() => setIsEmailModalOpen(false)} className="w-full mt-3 text-slate-400 text-sm py-2 hover:text-slate-600">
+                        닫기
+                    </button>
+                </div>
+            </div>
+        )}
 
         {/* Modal: Master Coach Manager */}
         {isMasterModalOpen && (

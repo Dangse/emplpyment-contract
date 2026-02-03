@@ -103,8 +103,8 @@ export const PayrollPage: React.FC = () => {
   const saveData = (newDb: DB) => {
     setDb(newDb);
     localStorage.setItem('boxing_payroll_v6_final', JSON.stringify(newDb));
-    setSaveIndicator("● 저장됨");
-    setTimeout(() => setSaveIndicator(""), 2000);
+    setSaveIndicator("● 바로저장 중..");
+    setTimeout(() => setSaveIndicator(""), 1500);
   };
 
   // 3. Logic: Add Coach
@@ -350,9 +350,14 @@ export const PayrollPage: React.FC = () => {
             {/* Header */}
             <header className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-6 sticky top-2 z-40">
                 <div className="flex justify-between items-center mb-5">
-                    <h1 className="text-2xl font-black text-slate-800 flex items-center gap-2">
-                        🥊 급여 장부
-                    </h1>
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-2xl font-black text-slate-800 flex items-center gap-2">
+                            🥊 급여 장부
+                        </h1>
+                         <span className={`text-[11px] font-bold text-indigo-500 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full transition-all duration-300 flex items-center gap-1 ${saveIndicator ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'}`}>
+                           {saveIndicator}
+                        </span>
+                    </div>
                     <select 
                         value={selectedYear} 
                         onChange={(e) => setSelectedYear(e.target.value)}
@@ -383,10 +388,6 @@ export const PayrollPage: React.FC = () => {
                         )}
                         {isExporting ? "생성 중..." : "세무사 전송 (엑셀)"}
                     </button>
-                </div>
-                
-                <div className={`text-right text-xs mt-2 h-4 font-medium transition-colors ${saveIndicator ? 'text-green-600' : 'text-slate-400'}`}>
-                    {saveIndicator}
                 </div>
             </header>
 

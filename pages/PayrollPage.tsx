@@ -123,7 +123,7 @@ export const PayrollPage: React.FC = () => {
   const saveData = (newDb: DB) => {
     setDb(newDb);
     localStorage.setItem('boxing_payroll_v6_final', JSON.stringify(newDb));
-    setSaveIndicator("● 바로저장 중..");
+    setSaveIndicator("● 이 기계에서 바로저장 중..");
     setTimeout(() => setSaveIndicator(""), 1500);
   };
 

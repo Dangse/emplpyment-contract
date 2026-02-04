@@ -249,7 +249,17 @@ export const PayrollPage: React.FC = () => {
     rows.push(headers);
 
     let hasData = false;
-    for (let m = 0; m < 12; m++) {
+    
+    // Determine month range based on viewMode
+    let startMonth = 0;
+    let endMonth = 11;
+
+    if (viewMode === 'monthly') {
+        startMonth = focusedMonth;
+        endMonth = focusedMonth;
+    }
+
+    for (let m = startMonth; m <= endMonth; m++) {
       const roster = db.rosters[`${selectedYear}-${m}`] || [];
       roster.forEach(id => {
         const val = db.years[selectedYear]?.[id]?.[m] || 0;
@@ -296,7 +306,14 @@ export const PayrollPage: React.FC = () => {
         const day = String(now.getDate()).padStart(2, '0');
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
-        const fileName = `${selectedYear}년_급여자료_${month}월${day}일_${hours}시${minutes}분.xlsx`;
+        
+        // Generate filename based on viewMode
+        let fileTitle = `${selectedYear}년_전체급여자료`;
+        if (viewMode === 'monthly') {
+            fileTitle = `${selectedYear}년_${focusedMonth + 1}월분_급여자료`;
+        }
+        
+        const fileName = `${fileTitle}_${month}${day}일_${hours}시${minutes}분.xlsx`;
         
         XLSX.writeFile(wb, fileName);
 
@@ -312,10 +329,24 @@ export const PayrollPage: React.FC = () => {
   };
 
   // Helper: Prepare email content
-  const getEmailSubject = () => encodeURIComponent(`${selectedYear}년 급여신고 자료 제출`);
-  const getEmailBody = () => encodeURIComponent(
-    `세무사님 안녕하세요,\n\n${selectedYear}년도 체육관 급여신고 자료를 엑셀 파일로 송부드립니다.\n\n(다운로드된 '${lastSavedFileName}' 파일을 찾아 첨부해주세요.)\n\n감사합니다.`
-  );
+  const getEmailSubject = () => {
+    let subject = `${selectedYear}년 급여신고 자료 제출`;
+    if (viewMode === 'monthly') {
+        subject = `${selectedYear}년 ${focusedMonth + 1}월분 급여신고 자료 제출`;
+    }
+    return encodeURIComponent(subject);
+  };
+  
+  const getEmailBody = () => {
+    let periodText = `${selectedYear}년도`;
+    if (viewMode === 'monthly') {
+        periodText = `${selectedYear}년 ${focusedMonth + 1}월분`;
+    }
+    
+    return encodeURIComponent(
+        `세무사님 안녕하세요,\n\n${periodText} 체육관 급여신고 자료를 엑셀 파일로 송부드립니다.\n\n(다운로드된 '${lastSavedFileName}' 파일을 찾아 첨부해주세요.)\n\n감사합니다.`
+    );
+  };
 
   // Link Generators
   const getMailtoLink = () => `mailto:?subject=${getEmailSubject()}&body=${getEmailBody()}`;

@@ -6,7 +6,8 @@ interface AccordionItem {
   id: number;
   title: string;
   subtitle?: string;
-  detail: string;
+  // content allows ReactNode for rich formatting (lists, bold text, etc.)
+  content: React.ReactNode; 
 }
 
 export const HomePage: React.FC = () => {
@@ -30,70 +31,165 @@ export const HomePage: React.FC = () => {
       id: 1,
       title: "사업용계좌 만들기",
       subtitle: "미이행시 매년수입금액 * 0.2% 가산세",
-      detail: "사업장 명의로 된 통장을 개설하고 반드시 국세청 홈택스에 등록해야 합니다. 인건비, 임차료 등 주요 경비는 이 계좌를 통해 거래해야 비용 처리가 확실하며, 세무 조사 시 투명성을 입증하는 기본 자료가 됩니다."
+      content: (
+        <>
+          사업장 명의로 된 통장을 개설하고 반드시 <strong className="text-indigo-700">국세청 홈택스에 등록</strong>해야 합니다. 인건비, 임차료 등 주요 경비는 이 계좌를 통해 거래해야 비용 처리가 확실하며, 세무 조사 시 투명성을 입증하는 기본 자료가 됩니다.
+        </>
+      )
     },
     {
       id: 2,
       title: "10만원 이상 현금영수증 의무발행",
       subtitle: "미이행시 미발행금액 * 20% 가산세",
-      detail: "체육도장업은 현금영수증 의무발행 업종입니다. 소비자가 현금영수증 발급을 요청하지 않더라도, 건당 10만원 이상 거래 시에는 국세청 지정 코드(010-000-1234)로 자진 발급해야 가산세 폭탄을 피할 수 있습니다."
+      content: (
+        <>
+          체육도장업은 현금영수증 의무발행 업종입니다. 소비자가 현금영수증 발급을 요청하지 않더라도, <strong className="text-red-600">건당 10만원 이상 거래 시</strong>에는 국세청 지정 코드(010-000-1234)로 자진 발급해야 가산세 폭탄을 피할 수 있습니다.
+        </>
+      )
     },
     {
       id: 3,
       title: "지출신용카드 홈택스에 등록하기",
       subtitle: "누락 시 비용 인정 어려움",
-      detail: "사업용으로 사용하는 신용카드(대표자 명의)를 홈택스 [조회/발급 > 현금영수증 > 사업용신용카드] 메뉴에 등록하세요. 등록된 카드로 결제한 내역은 부가가치세 신고 시 매입세액 공제 및 비용 처리가 자동으로 집계되어 절세에 큰 도움이 됩니다."
+      content: (
+        <>
+          사업용으로 사용하는 신용카드(대표자 명의)를 홈택스 <strong>[조회/발급 &gt; 현금영수증 &gt; 사업용신용카드]</strong> 메뉴에 등록하세요. 등록된 카드로 결제한 내역은 부가가치세 신고 시 매입세액 공제 및 비용 처리가 자동으로 집계되어 절세에 큰 도움이 됩니다.
+        </>
+      )
     },
     {
       id: 4,
       title: "개업초기 인테리어 영수증 꼭 받기",
       subtitle: "적격증빙 수취 필수",
-      detail: "큰 비용이 들어가는 인테리어 공사 시, 반드시 세금계산서, 현금영수증, 신용카드 매출전표 등 '적격증빙'을 받아야 합니다. 간이영수증이나 단순 이체 내역만으로는 감가상각비 처리가 불가능하여 향후 종합소득세 폭탄의 원인이 됩니다."
+      content: (
+        <>
+          큰 비용이 들어가는 인테리어 공사 시, 반드시 <strong className="text-indigo-700">세금계산서, 현금영수증, 신용카드 매출전표</strong> 등 '적격증빙'을 받아야 합니다. 간이영수증이나 단순 이체 내역만으로는 감가상각비 처리가 불가능하여 향후 종합소득세 폭탄의 원인이 됩니다.
+        </>
+      )
     },
     {
       id: 5,
       title: "권리금 주고 인수시 서류 챙기기",
       subtitle: "계약서와 대금지급영수증",
-      detail: "권리금을 지급했다면 권리금 계약서를 작성하고, 권리금에 대한 기타소득세(8.8%)를 원천징수하여 신고/납부해야 합니다. 이 과정을 거쳐야 지급한 권리금을 5년간 비용(감가상각)으로 인정받아 세금을 줄일 수 있습니다."
+      content: (
+        <>
+          권리금을 지급했다면 권리금 계약서를 작성하고, 권리금에 대한 <strong className="text-indigo-700">기타소득세(8.8%)</strong>를 원천징수하여 신고/납부해야 합니다. 이 과정을 거쳐야 지급한 권리금을 5년간 비용(감가상각)으로 인정받아 세금을 줄일 수 있습니다.
+        </>
+      )
     }
   ];
 
-  // Data for Management News
+  // Data for Management News - Updated based on user request (2026.02.04)
   const newsItems: AccordionItem[] = [
     {
       id: 1,
-      title: "2026년 분기별 소상공인 정책자금 운영",
-      detail: "2026년도 소상공인시장진흥공단 및 지역 신용보증재단 정책자금은 분기별로 예산이 소진될 때까지 선착순 또는 심사제로 운영됩니다. 운전 자금 및 시설 개보수 자금이 필요하다면 매 분기 초(1월, 4월, 7월, 10월) 공고를 확인하고 미리 서류를 준비해야 승인 확률을 높일 수 있습니다."
+      title: "💰 금융 및 운영자금 지원 (가장 시급)",
+      content: (
+        <div className="space-y-4 text-sm leading-relaxed text-slate-600">
+           <div className="bg-white border border-slate-200 rounded-lg p-3">
+             <div className="flex justify-between items-center mb-1">
+                <strong className="text-indigo-700 text-base">스포츠산업 융자 (튼튼론)</strong>
+                <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded">2/25 마감 (2차)</span>
+             </div>
+             <p className="mb-2">시설 개보수(10년 상환) 및 운영자금(2.96% 금리)을 지원합니다.</p>
+             <a href="https://spobiz.kspo.or.kr" target="_blank" rel="noreferrer" className="text-indigo-500 font-bold hover:underline">👉 스포츠산업지원 (spobiz.kspo.or.kr)</a>
+           </div>
+
+           <div className="bg-white border border-slate-200 rounded-lg p-3">
+             <strong className="text-slate-800 block mb-1">소상공인 정책자금</strong>
+             <p className="mb-2">상시근로자 5인 미만 소상공인 대상, 시중 은행보다 낮은 금리로 대리 대출을 지원합니다.</p>
+             <a href="https://ols.semas.or.kr" target="_blank" rel="noreferrer" className="text-slate-500 font-bold hover:underline">👉 소상공인시장진흥공단</a>
+           </div>
+        </div>
+      )
     },
     {
       id: 2,
-      title: "스마트상점 기술보급 사업과 AI 바우처",
-      detail: "중소벤처기업부 주관 스마트상점 기술보급 사업을 통해 키오스크, 스마트 미러, AI 동작 분석 카메라 등 스마트 기술 도입 비용의 최대 70%(최대 500~1,500만원)를 지원받을 수 있습니다. 체육관의 디지털 전환을 위해 모집 시기를 놓치지 마세요."
+      title: "🎫 매출 및 수강생 유치 지원 (바우처)",
+      content: (
+        <div className="space-y-4 text-sm leading-relaxed text-slate-600">
+           <div>
+             <strong className="text-slate-800 block mb-1 text-base">✅ 스포츠강좌이용권 (시설 등록 필수)</strong>
+             <ul className="list-disc pl-4 space-y-1">
+                <li><strong>내용:</strong> 저소득층 유·청소년 월 수강료(10.5~11만원) 국비 지원</li>
+                <li><strong>장점:</strong> 회원이 바우처 카드로 결제 시 자동 입금됩니다.</li>
+                <li><a href="https://svoucher.kspo.or.kr" target="_blank" rel="noreferrer" className="text-indigo-500 font-bold hover:underline">등록하러 가기 (svoucher.kspo.or.kr)</a></li>
+             </ul>
+           </div>
+           <hr className="border-slate-100"/>
+           <div>
+             <strong className="text-slate-800 block mb-1 text-base">🏃 튼튼머니 인증시설</strong>
+             <p>국민체력100에 시설 등록 시, 회원이 출석할 때마다 현금성 포인트 지급. "운동하면 돈 버는 체육관"으로 홍보하세요.</p>
+           </div>
+        </div>
+      )
     },
     {
       id: 3,
-      title: "특례보증 및 경영환경 개선",
-      detail: "고금리 시대에 금융 비용 부담을 완화하기 위해 지역 신용보증재단에서 '저금리 대환 대출' 특례 보증을 시행 중입니다. 또한, 간판 교체, 인테리어 개선 등 경영환경 개선 사업 신청 시 최대 200~300만원의 실비 지원을 받을 수 있습니다."
+      title: "🛠 시설 및 환경 개선 (지원금)",
+      content: (
+         <div className="space-y-4 text-sm leading-relaxed text-slate-600">
+            <div>
+              <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-0.5 rounded mb-1 inline-block">최대 1,500만원</span>
+              <strong className="text-slate-800 block text-base">소상공인 스마트상점 기술보급</strong>
+              <p>키오스크, 스마트미러, AI 동작분석기 등 도입 비용의 50~70%를 지원합니다. (2~4월 모집)</p>
+            </div>
+            <div>
+              <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-0.5 rounded mb-1 inline-block">최대 300만원</span>
+              <strong className="text-slate-800 block text-base">경영환경개선 (성남시/경기도 등)</strong>
+              <p>간판 교체, 인테리어, 바닥 공사 비용의 80~90% 지원. 지자체 공고(2~3월) 확인이 필수입니다.</p>
+            </div>
+            <div>
+              <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-0.5 rounded mb-1 inline-block">40% 환급</span>
+              <strong className="text-slate-800 block text-base">한전 고효율기기 지원</strong>
+              <p>에너지효율 1등급 냉난방기 신규 구매 시 구매 비용의 40%를 현금 환급해 드립니다.</p>
+            </div>
+         </div>
+      )
     },
     {
       id: 4,
-      title: "지자체 지원 정보 확인 및 활용 사이트",
-      detail: "'소상공인마당(sbiz.or.kr)' 및 각 시/군/구청 기업지원과 홈페이지, '기업마당' 사이트를 즐겨찾기 하세요. 우리 지역만의 임대료 지원, 홍보 마케팅비 지원 등 틈새 지원 사업 공고가 수시로 올라옵니다."
+      title: "👥 인력 채용 지원 (인건비)",
+      content: (
+        <div className="text-sm leading-relaxed text-slate-600">
+           <strong className="text-slate-800 block mb-1 text-base">스포츠산업 일자리 지원 (인턴십)</strong>
+           <p className="mb-2">스포츠 직무 인턴 채용 시 인건비 일부(월 128만원 수준)를 지원하며, 정규직 전환 시 추가 혜택이 있습니다.</p>
+           <div className="bg-slate-50 p-2 rounded text-xs">
+             * 체육시설업 사업자 등록 및 4대보험 가입 필수
+           </div>
+        </div>
+      )
     },
     {
       id: 5,
-      title: "우수 체육시설 인증 및 안전 관리 지원",
-      detail: "국민체육진흥공단(KSPO)의 '우수 체육시설 인증'을 획득하면 홍보 효과뿐만 아니라 안전 시설 개보수 지원금 혜택을 받을 수 있습니다. 또한 스포츠안전재단의 안전 점검 컨설팅을 무료로 신청하여 회원 신뢰도를 높일 수 있습니다."
-    },
-    {
-      id: 6,
-      title: "소상공인 경영 안정 바우처와 보험 지원",
-      detail: "폐업의 위험으로부터 보호받는 '노란우산공제' 신규 가입 시 지자체별 장려금(월 1~2만원)이 추가 지원됩니다. 또한 자영업자 고용보험료 지원 사업을 통해 납부한 보험료의 50~80%를 환급받을 수 있으니 필수로 신청하시기 바랍니다."
-    },
-    {
-      id: 7,
-      title: "AI 및 첨단 기술을 활용한 비즈니스 모델 혁신",
-      detail: "단순 지도를 넘어, AI 동작 분석 앱과 연동한 하이브리드 코칭, 웨어러블 디바이스를 활용한 회원 건강 데이터 관리 등 '데이터 기반'의 프리미엄 PT 서비스를 도입하여 경쟁 업체와 차별화된 고부가가치 비즈니스 모델을 구축할 때입니다."
+      title: "✅ 2월 관장님 핵심 체크리스트",
+      content: (
+         <div className="bg-yellow-50 border border-yellow-100 rounded-lg p-4 text-sm text-slate-700">
+            <ul className="space-y-3">
+               <li className="flex gap-2">
+                  <span className="text-red-500 font-bold">1.</span>
+                  <span>
+                    <strong>자금 신청 (2/25 마감):</strong><br/>
+                    시설 투자가 필요하다면 '스포츠산업 융자(튼튼론)' 2차 접수를 놓치지 마세요.
+                  </span>
+               </li>
+               <li className="flex gap-2">
+                  <span className="text-red-500 font-bold">2.</span>
+                  <span>
+                    <strong>지자체 공고 확인:</strong><br/>
+                    성남시청 홈페이지에서 "소상공인 경영환경개선" 검색 (간판/인테리어 지원)
+                  </span>
+               </li>
+               <li className="flex gap-2">
+                  <span className="text-red-500 font-bold">3.</span>
+                  <span>
+                    <strong>바우처 가맹:</strong><br/>
+                    돈 드는 것 아니니 '스포츠강좌이용권' 가맹점 등록 즉시 신청!
+                  </span>
+               </li>
+            </ul>
+         </div>
+      )
     }
   ];
 
@@ -254,10 +350,10 @@ export const HomePage: React.FC = () => {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
                       </button>
-                      <div className={`transition-[max-height,opacity] duration-300 ease-in-out ${isOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}>
+                      <div className={`transition-[max-height,opacity] duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                         <div className="px-5 pb-5 pl-[3.75rem] text-slate-600 leading-relaxed text-sm">
                           <div className="bg-white p-4 rounded-lg border border-indigo-100/50 shadow-sm">
-                            <span className="font-bold text-indigo-500 mr-1">Detail.</span> {item.detail}
+                            <span className="font-bold text-indigo-500 mr-1">Detail.</span> {item.content}
                           </div>
                         </div>
                       </div>
@@ -302,11 +398,11 @@ export const HomePage: React.FC = () => {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
                       </button>
-                      <div className={`transition-[max-height,opacity] duration-300 ease-in-out ${isOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}>
+                      <div className={`transition-[max-height,opacity] duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                         <div className="px-5 pb-5 pl-[3.75rem] text-slate-600 leading-relaxed text-sm">
                           <div className="bg-white p-4 rounded-lg border border-emerald-100/50 shadow-sm flex gap-3">
                              <div className="w-1 bg-emerald-400 rounded-full flex-shrink-0"></div>
-                             <div>{item.detail}</div>
+                             <div className="w-full">{item.content}</div>
                           </div>
                         </div>
                       </div>

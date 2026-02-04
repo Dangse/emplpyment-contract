@@ -566,8 +566,8 @@ export const PayrollPage: React.FC = () => {
                 })}
             </div>
             
-            <div className="text-center text-slate-300 text-sm mt-12 mb-6">
-                Boxing Gym Payroll System Final
+            <div className="text-center text-slate-300 text-sm mt-12 mb-6 font-serif">
+                DH 대한세무법인 급여관리 서비스
             </div>
         </div>
 

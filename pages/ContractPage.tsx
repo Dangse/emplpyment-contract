@@ -72,7 +72,18 @@ export const ContractPage: React.FC = () => {
             className="flex items-center gap-3 cursor-pointer group" 
             onClick={() => navigate('/')}
           >
-            <div className="w-10 h-10 bg-slate-900 text-white font-serif font-bold text-xl flex items-center justify-center rounded-sm group-hover:bg-slate-800 transition-colors">
+             {/* Updated Logo Styling - Reverted to PNG */}
+             <img 
+               src="/logo.png" 
+               alt="DH Logo" 
+               className="w-10 h-10 rounded-full shadow-md object-contain bg-transparent group-hover:opacity-90 transition-opacity"
+               onError={(e) => {
+                 e.currentTarget.style.display = 'none';
+                 e.currentTarget.nextElementSibling?.classList.remove('hidden');
+               }}
+             />
+             {/* Fallback */}
+            <div className="hidden w-10 h-10 bg-slate-900 text-white font-serif font-bold text-xl flex items-center justify-center rounded-sm group-hover:bg-slate-800 transition-colors">
               DH
             </div>
             <span className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight font-serif">

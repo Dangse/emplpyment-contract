@@ -214,9 +214,21 @@ export const HomePage: React.FC = () => {
       {/* Header */}
       <header className="relative z-50 pt-6 px-6 md:px-12 flex justify-between items-center">
         <div className="flex items-center gap-3">
-           <div className="w-10 h-10 bg-slate-900 text-white font-serif font-bold text-xl flex items-center justify-center rounded-lg shadow-lg">
+           {/* Logo Image - Reverted to png */}
+           <img 
+             src="/logo.png" 
+             alt="DH Logo" 
+             className="w-12 h-12 rounded-full object-contain bg-transparent"
+             onError={(e) => {
+               // Fallback if image not found
+               e.currentTarget.style.display = 'none';
+               e.currentTarget.nextElementSibling?.classList.remove('hidden');
+             }}
+           />
+           {/* Fallback div if image fails to load */}
+           <div className="hidden w-10 h-10 bg-slate-900 text-white font-serif font-bold text-xl flex items-center justify-center rounded-lg shadow-lg">
               DH
-            </div>
+           </div>
             <span className="text-lg font-bold tracking-tight text-slate-900 font-serif">
               대한세무법인
             </span>

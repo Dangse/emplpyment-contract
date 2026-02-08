@@ -214,9 +214,9 @@ export const HomePage: React.FC = () => {
       {/* Header */}
       <header className="relative z-50 pt-6 px-6 md:px-12 flex justify-between items-center">
         <div className="flex items-center gap-3">
-           {/* Logo Image - Reverted to png */}
+           {/* Logo Image - Updated to logo192.png */}
            <img 
-             src="/logo.png" 
+             src="/logo192.png" 
              alt="DH Logo" 
              className="w-12 h-12 rounded-full object-contain bg-transparent"
              onError={(e) => {

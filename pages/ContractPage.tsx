@@ -72,9 +72,9 @@ export const ContractPage: React.FC = () => {
             className="flex items-center gap-3 cursor-pointer group" 
             onClick={() => navigate('/')}
           >
-             {/* Updated Logo Styling - Reverted to PNG */}
+             {/* Updated Logo Styling - Changed to logo192.png */}
              <img 
-               src="/logo.png" 
+               src="/logo192.png" 
                alt="DH Logo" 
                className="w-10 h-10 rounded-full shadow-md object-contain bg-transparent group-hover:opacity-90 transition-opacity"
                onError={(e) => {

@@ -7,36 +7,59 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// 1. 경로 설정: Vite 빌드 시 public 폴더 내용이 dist로 자동 복사됨
 const distPath = path.join(__dirname, 'dist');
 
-// 2. 정적 파일 서빙 설정
-// 빌드된 파일들(JS, CSS, 이미지 등)이 모두 dist 폴더에 있습니다
+// --- Debugging: Server Startup Check ---
+console.log('Starting server...');
+console.log(`Looking for static files in: ${distPath}`);
+
+if (fs.existsSync(distPath)) {
+  console.log('✅ Build directory (dist) found.');
+  try {
+    const files = fs.readdirSync(distPath);
+    console.log(`📂 Directory contents (${files.length} files):`, files.join(', '));
+    
+    if (!files.includes('index.html')) {
+      console.error('❌ CRITICAL: index.html is missing in dist folder!');
+    }
+  } catch (e) {
+    console.error('⚠️ Error reading dist directory:', e);
+  }
+} else {
+  console.error('❌ CRITICAL ERROR: dist directory NOT found.');
+  console.error('   Make sure "npm run build" was executed before starting the server.');
+  console.error('   If using Docker, check if "RUN npm run build" is in the Dockerfile.');
+}
+// ---------------------------------------
+
+// 1. Serve Static Assets from 'dist'
+// This serves js, css, images, manifest.json, etc.
 app.use(express.static(distPath));
 
-// 3. 정적 리소스(이미지, CSS 등)가 없을 때의 예외 처리
-// 위 두 폴더(dist, public)에서도 파일을 못 찾았다면, index.html을 보내지 않고 진짜 404 에러를 냅니다.
-// (브라우저가 이미지를 요청했는데 HTML을 받는 엉뚱한 상황 방지)
-app.get(/\.(js|css|map|ico|png|jpg|jpeg|json|woff2?)$/, (req, res) => {
-  console.log(`Resource not found: ${req.url}`); // 디버깅을 위해 로그 추가
-  res.status(404).send('Resource not found');
-});
-
-// 4. SPA(Single Page App) 라우팅 처리
-// 위의 모든 검사를 통과하지 못한 요청(페이지 이동 등)은 index.html을 돌려줍니다.
+// 2. SPA Fallback: Serve index.html for any unknown routes
 app.get('*', (req, res) => {
   const indexPath = path.join(distPath, 'index.html');
   
+  // Prevent caching index.html so users get updates immediately
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+
   fs.readFile(indexPath, 'utf8', (err, htmlData) => {
     if (err) {
-      console.error('Error reading index.html', err);
-      return res.status(500).send('Server Error: Build output missing. Please check logs.');
+      console.error('Error serving index.html:', err);
+      return res.status(500).send(`
+        <div style="font-family: sans-serif; padding: 20px; text-align: center;">
+          <h1>Server Error (500)</h1>
+          <p>Application build artifacts are missing.</p>
+          <p style="color: #666; font-size: 0.9em;">Error: Could not read ${indexPath}</p>
+        </div>
+      `);
     }
 
-    // 환경 변수(API Key 등) 주입 로직 유지
+    // Inject Runtime Environment Variables (API Key) safely
     const apiKey = process.env.API_KEY || '';
     const envScript = `<script>window.env = { API_KEY: "${apiKey}" };</script>`;
     
+    // Insert the env script before the closing head tag
     const finalHtml = htmlData.replace('</head>', `${envScript}</head>`);
     
     res.send(finalHtml);
@@ -44,6 +67,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`Serving static files from: ${distPath}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });

@@ -7,17 +7,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// 1. 경로 설정: dist(빌드 결과물)와 public(원본 정적 파일) 두 곳을 모두 지정합니다.
+// 1. 경로 설정: Vite 빌드 시 public 폴더 내용이 dist로 자동 복사됨
 const distPath = path.join(__dirname, 'dist');
-const publicPath = path.join(__dirname, 'public');
 
-// 2. 정적 파일 서빙 설정 (순서 중요!)
-// 첫 번째: 빌드된 파일들이 있는 'dist' 폴더를 먼저 찾아봅니다.
+// 2. 정적 파일 서빙 설정
+// 빌드된 파일들(JS, CSS, 이미지 등)이 모두 dist 폴더에 있습니다
 app.use(express.static(distPath));
-
-// 두 번째: 만약 dist에 파일이 없다면 'public' 폴더를 찾아봅니다. (여기에 logo.png가 있을 것입니다)
-// 이 코드가 추가되어야 404 문제를 해결할 수 있습니다.
-app.use(express.static(publicPath));
 
 // 3. 정적 리소스(이미지, CSS 등)가 없을 때의 예외 처리
 // 위 두 폴더(dist, public)에서도 파일을 못 찾았다면, index.html을 보내지 않고 진짜 404 에러를 냅니다.
@@ -50,6 +45,5 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  console.log(`Serving dist files from: ${distPath}`);
-  console.log(`Serving public files from: ${publicPath}`);
+  console.log(`Serving static files from: ${distPath}`);
 });

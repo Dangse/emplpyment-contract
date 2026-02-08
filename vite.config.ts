@@ -7,8 +7,10 @@ export default defineConfig({
     // Map process.env.API_KEY to window.env.API_KEY for runtime injection support
     'process.env.API_KEY': 'window.env.API_KEY'
   },
+  publicDir: 'public',
   build: {
     outDir: 'dist',
-    emptyOutDir: true
+    emptyOutDir: true,
+    copyPublicDir: true
   }
 });

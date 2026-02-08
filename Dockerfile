@@ -26,9 +26,8 @@ COPY package*.json ./
 # Install production dependencies only
 RUN npm ci --omit=dev
 
-# Copy built files from builder stage
+# Copy built files from builder stage (public files are already in dist)
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/public ./public
 COPY server.js ./
 
 # Expose port (Cloud Run will set PORT env var)
